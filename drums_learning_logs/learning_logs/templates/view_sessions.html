@@ -30,7 +30,7 @@
                     <td class="session-data">{{ session.exercise }}</td>
                     <td class="session-data">{{ session.bpm }}</td>
                     <td class="session-data">{{ session.days_since_last_practice }}</td>
-                    <td class="edit-session-button"><a><span class="material-symbols-outlined">edit</span></a></td>
+                    <td class="edit-session-button"><a href="{% url 'edit_session' session.id %}"><span class="material-symbols-outlined">edit</span></a></td>
                 </tr>
             {% endfor %}
         </tbody>

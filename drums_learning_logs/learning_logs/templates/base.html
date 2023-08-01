@@ -23,7 +23,7 @@
                 <a class="navbar-link" href="{% url 'view_sessions' %}">Sessions</a>
             </li>
             <li>
-                <a class="navbar-link">Add New Session</a>
+                <a class="navbar-link" href="{% url 'new_session' %}">Add New Session</a>
             </li>
             <li>
                 <a class="navbar-link">View Session Dashboard</a>
@@ -36,3 +36,5 @@
     <main>
         {% block content %}{% endblock content %}
     </main>
+</body>
+</html>

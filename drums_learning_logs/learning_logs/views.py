@@ -15,27 +15,16 @@ default_end_date = dt.today()
 def index(request):
     return render(request, "index.html")
 
-# def new_book(request):
-#     if request.method == "POST":
-#         form = BookForm(data=request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect("view_sessions")
-#     else:
-#         form = BookForm()
-#     context = {"form": form}
-#     return render(request, "new_book.html", context)
-
-# def new_session(request):
-#     if request.method == "POST":
-#         form = SessionForm(data=request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect("view_sessions")
-#     else:
-#         form = SessionForm()
-#     context = {"form": form}
-#     return render(request, "new_session.html", context)
+def new_session(request):
+    if request.method == "POST":
+        form = SessionForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("view_sessions")
+    else:
+        form = SessionForm()
+    context = {"form": form}
+    return render(request, "new_session.html", context)
 
 def view_sessions(request, start_date=default_start_date, end_date=default_end_date):
     # Date Form
@@ -52,10 +41,8 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
     fields[fields.index("Bpm")] = "BPM"
     
     # Session Data
-    session_data = Session.objects.filter(date__range=[start_date, end_date]).values('date', 'time_minutes', 'exercise_id', 'bpm',
+    session_data = Session.objects.filter(date__range=[start_date, end_date]).values('id', 'date', 'time_minutes', 'exercise_id', 'bpm',
                                                                                      'days_since_last_practice').order_by('-date')
-    print(session_data)
-    
     # Get exercise name
     for session in session_data:
         session['exercise'] = Exercise.objects.get(id=session['exercise_id']).name
@@ -68,29 +55,26 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
     
     return render(request, "view_sessions.html", context)
     
-# def edit_session(request, session_id):
-#     session = Session.objects.get(id=session_id)
+def edit_session(request, session_id):
+    session = Session.objects.get(id=session_id)
     
-#     if request.method == "POST":
-#         form = SessionForm(instance=session, data=request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect("view_sessions")
-#     else:
-#         form = SessionForm(instance=session)
+    if request.method == "POST":
+        form = SessionForm(instance=session, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("view_sessions")
+    else:
+        form = SessionForm(instance=session)
         
-#     context = {"form": form, "session": session}
-#     return render(request, "edit_session.html", context=context)
+    context = {"form": form, "session": session}
+    return render(request, "edit_sessions.html", context)
 
-# def delete_session(request, session_id):
-#     session = Session.objects.get(id=session_id)
-#     session.delete()
-#     return redirect("view_sessions")
+def delete_session(request, session_id):
+    session = Session.objects.get(id=session_id)
+    session.delete()
+    return redirect("view_sessions")
 
-# def view_books(request):
-#     return render(request, "index.html")
-
-# def view_charts(request, start_date=default_start_date, end_date=default_end_date):
+# def dashboard(request, start_date=default_start_date, end_date=default_end_date):
 #     # Session Data
 #     # session_data = pd.DataFrame(list(Session.objects.values()))
 #     # session_data = session_data.rename(columns={'book_id': 'book', 'time_minutes': 'time'})

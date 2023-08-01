@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="session-form-container">
+    <h2>Edit Session</h2>
+    <form action="{% url 'edit_session' session.id %}" method="post" class="edit-session-form">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <div class="session-form-options">
+            <button type="submit" class="basic-button">Submit</button>
+            <a class="basic-button" href="{% url 'view_sessions' %}">Cancel</a>
+            <a class="basic-button" href="{% url 'delete_session' session.id %}">Delete Session</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}
