@@ -1,18 +1,19 @@
 :root {
     font-family: Tahoma, sans-serif;
     --button-color-light-blue: #3882f6;
+    --bg-color-white: #dfdfdf;
     --bg-color-dark-blue: #1f2937;
+    --font-color-white: #dcdcdc;
 }
 
 body {
     display: flex;
     flex-direction: column;
     margin: 0;
-    background-color: #dfdfdf;
+    background-color: var(--bg-color-white);
 }
 
 nav {
-    --font-color: #dcdcdc;
     background-color: var(--bg-color-dark-blue);
     display: flex;
     margin: 0;
@@ -23,13 +24,13 @@ nav {
 
 .home-button {
     margin: 0 0 0 2%;
-    color: var(--font-color);
+    color: var(--font-color-white);
     text-decoration: none;
     font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 48
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
 }
 
 .navbar-link-list {
@@ -41,7 +42,7 @@ nav {
 }
 
 .navbar-link {
-    color: var(--font-color);
+    color: var(--font-color-white);
     text-decoration: none;
 }
 
@@ -49,31 +50,71 @@ nav {
     --font-color: #dcdcdc;
     background-color: var(--bg-color-dark-blue);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: left;
     padding: 3%;
 }
 
 .welcome-title {
-    font-size: 48px;
+    font-size: 3rem;
     font-weight: bolder;
-    color: var(--font-color);
-    margin: 0px;
+    color: var(--font-color-white);
+    margin: 0 0 1.5vh 0;
 }
 
 .welcome-text {
-    font-size: 18px;
-    color: var(--font-color);
-    width: 600px;
-    margin: 0px 0px 12px 0px;
+    font-size: 1.5rem;
+    color: var(--font-color-white);
+    width: 110vh;
+    margin: 0 0 1.5vh 0;
+}
+
+.auth-menu {
+    display: flex;
+    align-items: center;
+    gap: 4%;
 }
 
 .auth-button {
     background-color: var(--button-color-light-blue);
     border-radius: 25px;
-    border: 2px solid var(--button-color-light-blue);
-    height: 30px;
-    width: 100px;
     color: #f9faf8;
+    padding: 1.5vh 3vh 1.5vh 3vh;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.sessions {
+    margin: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.date-search-container {
+    display: flex;
+    align-items: center;
+    gap: 2%;
+    margin: 0 0 1% 0;
+}
+
+.date-selector > input{
+    color: var(--font-color-white);
+    background-color: var(--bg-color-dark-blue);
+    border: 0.5vh solid var(--bg-color-dark-blue);
+    border-radius: 0.6vw;
+    margin: 0 1vw 0 0;
+}
+
+.date-search-button {
+    background-color: var(--button-color-light-blue);
+    padding: 1vh 1.5vw 1vh 1.5vw;
+    border: 0;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: #000000;
     font-weight: bold;
 }

@@ -1,0 +1,29 @@
+.session-history {
+    border-collapse: collapse;
+    width: 90vw;
+}
+
+th {
+    color: var(--font-color-white);
+    background-color: var(--bg-color-dark-blue);
+}
+
+td, th {
+    border: 1px solid #000000;
+    padding: 0.5rem;
+}
+
+.edit-session-button {
+    display: none;
+}
+
+tr:hover > .edit-session-button, .edit-session-button:hover {
+    display: block;
+    border: 0;
+    background-color: var(--bg-color-white);
+}
+
+tr:hover > .session-data {
+    font-weight: bold;
+    background-color: #bcc7e0;
+}

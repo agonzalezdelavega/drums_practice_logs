@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div>
-    <form action="{% url 'view_sessions' %}", method="post">
-        {% csrf_token %}
-        {{ form.as_table }}
-        <button name="submit" class="btn btn-sm btn-dark">Search</button>
-        <a class="btn btn-sm btn-dark" href="{% url 'view_sessions' %}">View Last 30 Days</a>
-    </form>
-    <table class="table table-striped table-light">
+<div class="sessions">
+    <div class="date-search-container">
+        <form action="{% url 'view_sessions' %}" class="date-selector" method="post">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <button type="submit" class="date-search-button">Search</button>
+        </form>
+        <a class="date-search-button" href="{% url 'view_sessions' %}">View Last 30 Days</a>
+    {% if session_data|length == 0 %}
+        <p><strong>No records were found for the given date range.</strong></p>
+    </div>
+    {% else %}
+    </div>
+    <table class="session-history">
         <thead>
             <tr>
                 {% for field in fields %}
@@ -19,21 +25,17 @@
         <tbody>
             {% for session in session_data %}
                 <tr>
-                    <td>{{ session.date }}</td>
-                    <td>{{ session.time_minutes }}</td>
-                    <td>{{ session.book }}</td>
-                    <td>{{ session.page }}</td>
-                    <td>{{ session.bpm }}</td>
-                    <td>{{ session.days_since_last_practice }}</td>
-                    <td><a class="btn btn-sm btn-dark" href="{% url 'edit_session' session.id %}">Edit Session</a></td>
+                    <td class="session-data">{{ session.date }}</td>
+                    <td class="session-data">{{ session.time_minutes }}</td>
+                    <td class="session-data">{{ session.exercise }}</td>
+                    <td class="session-data">{{ session.bpm }}</td>
+                    <td class="session-data">{{ session.days_since_last_practice }}</td>
+                    <td class="edit-session-button"><a><span class="material-symbols-outlined">edit</span></a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 </div>
 <br>
-<div class="pb-4 mb-4 border-top p-3">
-    <a class="btn btn-mdl btn-success" href="{% url 'new_session' %}" role="button">Add new session</a>
-    <a class="btn btn-mdl btn-success" href="{% url 'new_book' %}" role="button">Add new book</a>
-</div>
 {% endblock content %}
