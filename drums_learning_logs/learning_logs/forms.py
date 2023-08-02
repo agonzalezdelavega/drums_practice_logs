@@ -55,7 +55,7 @@ class SessionForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(SessionForm, self).__init__(*args, **kwargs)
         sources = Source.objects.filter(user=user)
-        self.fields['exercise'].queryset = exercises = Exercise.objects.filter(source__in=sources)
+        self.fields['exercise'].queryset = Exercise.objects.filter(source__in=sources)
     
     class Meta:
         model = Session
