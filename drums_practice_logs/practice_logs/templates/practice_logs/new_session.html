@@ -1,0 +1,15 @@
+{% extends "practice_logs/base.html" %}
+
+{% block content %}
+<div class="item-form-container" >
+    <h2>Add New Session</h2>
+    <form action="{% url 'practice_logs:new_session' %}" method="post" class="item-form">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <div class="item-form-options">
+            <button name="submit" class="basic-button">Add Session</button>
+            <a class="basic-button" href="/sessions/view_sessions">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

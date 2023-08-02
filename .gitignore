@@ -163,3 +163,7 @@ cython_debug/
 
 # Test data
 **/test_data
+
+# Terraform
+**terraform/.terraform*
+**terraform/terraform.tfvars*

@@ -1,0 +1,41 @@
+{% extends "practice_logs/base.html" %}
+
+{% block content %}
+<div class="sessions">
+    <div class="date-search-container">
+        <form action="{% url 'practice_logs:view_sessions' %}" class="date-selector" method="post">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <button type="submit" class="session-table-options">Search</button>
+        </form>
+        <a class="session-table-options" href="{% url 'practice_logs:view_sessions' %}">View Last 30 Days</a>
+        <a class="session-table-options" href="{% url 'practice_logs:new_session' %}">Add Session</a>
+    </div>
+    {% if session_data|length == 0 %}
+    <p><strong>No records were found for the given date range.</strong></p>
+    {% else %}
+    <table class="session-history">
+        <thead>
+            <tr>
+                {% for field in fields %}
+                    <th>{{ field }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in session_data %}
+                <tr>
+                    <td class="session-data">{{ session.date }}</td>
+                    <td class="session-data">{{ session.time_minutes }}</td>
+                    <td class="session-data">{{ session.exercise }}</td>
+                    <td class="session-data">{{ session.bpm }}</td>
+                    <td class="session-data">{{ session.days_since_last_practice }}</td>
+                    <td class="edit-icon"><a href="{% url 'practice_logs:edit_session' session.id %}"><span class="material-symbols-outlined">edit</span></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+<br>
+{% endblock content %}

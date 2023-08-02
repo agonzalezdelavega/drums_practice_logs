@@ -1,0 +1,15 @@
+{% extends "practice_logs/base.html" %}
+
+{% block content %}
+<div class="item-form-container">
+    <h2>Add New Exercise</h2>
+    <form action="{% url 'practice_logs:new_print_exercise' %}" method="post" class="item-form">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <div class="item-form-options">
+            <button name="submit" class="basic-button">Add Exercise</button>
+            <a class="basic-button" href="/sources/view_sources">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}
