@@ -9,9 +9,14 @@ def sign_up(request):
             new_user = form.save()
             login(request, new_user)
             return redirect("learning_logs:dashboard")
+        else:
+            errors = form.errors.get_json_data()
+            error_messages = [errors[error][0]["message"] for error in errors]
+            
     else:
         form = UserCreationForm()
+        error_messages = ""
         
-    context = {"form": form}
+    context = {"form": form, "error_messages": error_messages}
     
     return render(request, "registration/signup.html", context)
