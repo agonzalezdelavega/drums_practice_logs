@@ -1,5 +1,6 @@
 from django import forms
 from .models import Source, Exercise, Session
+from datetime import datetime as dt
 
 
 class SourceForm(forms.ModelForm):
@@ -66,9 +67,14 @@ class SessionForm(forms.ModelForm):
             "date": "Date", "time_minutes": "Time (minutes)", "exercise": "Exercise", "bpm": "BPM"
         }
         widgets = {
-            "date": forms.widgets.NumberInput(attrs={'type': 'date'}),
+            # "date": forms.widgets.NumberInput(attrs={'type': 'date'}),
+            "date": forms.DateInput(attrs={
+                "type": "date",
+                "value": dt.today,
+                "max": dt.today
+            }),
         }
         
 class DateSearchForm(forms.Form):
-    start_date = forms.DateField(widget=forms.widgets.NumberInput(attrs={'type': 'date'}), required=False)
-    end_date = forms.DateField(widget=forms.widgets.NumberInput(attrs={'type': 'date'}), required=False)
+    start_date = forms.DateField(widget=forms.widgets.NumberInput(attrs={"type": "date", "value": dt.today, "required": True}), required=False)
+    end_date = forms.DateField(widget=forms.widgets.NumberInput(attrs={"type": "date", "value": dt.today, "required": True}), required=False)
