@@ -38,7 +38,8 @@ class Exercise(models.Model):
         unique_together = [["name", "source"]]
 
 class Session(models.Model):
-    date = models.DateField(auto_now_add=False, default=dt.today)
+    date = models.DateField(auto_now_add=False, default=dt.today, 
+                            validators=[MaxValueValidator(dt.today().date(), message=f"Please choose a day on or before today")])
     time_minutes = models.IntegerField(validators=[MinValueValidator(1)])
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, blank=True, null=True)
     bpm = models.IntegerField()
