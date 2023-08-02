@@ -52,6 +52,11 @@ class OnlineExerciseForm(forms.ModelForm):
         }
 
 class SessionForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(SessionForm, self).__init__(*args, **kwargs)
+        sources = Source.objects.filter(user=user)
+        self.fields['exercise'].queryset = exercises = Exercise.objects.filter(source__in=sources)
+    
     class Meta:
         model = Session
         fields = [
@@ -62,7 +67,6 @@ class SessionForm(forms.ModelForm):
         }
         widgets = {
             "date": forms.widgets.NumberInput(attrs={'type': 'date'}),
-            "exercise": forms.widgets.Select
         }
         
 class DateSearchForm(forms.Form):

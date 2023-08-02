@@ -101,6 +101,7 @@ nav {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 90vw;
 }
 
 .date-search-container {

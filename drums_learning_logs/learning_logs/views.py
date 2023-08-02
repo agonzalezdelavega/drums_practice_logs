@@ -20,12 +20,12 @@ def index(request):
 @login_required
 def new_session(request):
     if request.method == "POST":
-        form = SessionForm(data=request.POST)
+        form = SessionForm(request.user, request.POST)
         if form.is_valid():
             form.save()
             return redirect("learning_logs:view_sessions")
     else:
-        form = SessionForm()
+        form = SessionForm(request.user)
     context = {"form": form}
     return render(request, "learning_logs/new_session.html", context)
 
@@ -72,12 +72,12 @@ def edit_session(request, session_id):
         raise Http404
     
     if request.method == "POST":
-        form = SessionForm(instance=session, data=request.POST)
+        form = SessionForm(request.user, instance=session, data=request.POST)
         if form.is_valid():
             form.save()
             return redirect("learning_logs:view_sessions")
     else:
-        form = SessionForm(instance=session)
+        form = SessionForm(request.user, instance=session)
         
     context = {"form": form, "session": session}
     return render(request, "learning_logs/edit_sessions.html", context)
@@ -85,7 +85,6 @@ def edit_session(request, session_id):
 @login_required
 def delete_session(request, session_id):
     session = Session.objects.get(id=session_id)
-    
     exercise = session.exercise
     source = exercise.source
     if source.user != request.user:
