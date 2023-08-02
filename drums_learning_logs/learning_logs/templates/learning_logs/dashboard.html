@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends "learning_logs/base.html" %}
 {% block content %}
 <div class="dashboard">
     <div class="dashboard-heading">
-        <p class="dashboard-title">Welcome, User!</p>
+        <p class="dashboard-title">Welcome back, {{ user.username }}!</p>
         <div class="dashboard-add-items">
-            <a class="basic-button">Add Learning Source</a>
-            <a class="basic-button">Add Exercise</a>
-            <a class="basic-button">Add Session</a>
+            <a class="basic-button" href="{% url 'learning_logs:new_session' %}">Add Session</a>
+            <a class="basic-button" href="{% url 'learning_logs:view_sources' %}">Edit Learning Sources / Exercises</a>
         </div>
     </div>
     <div class="dashboard-content">
@@ -18,7 +17,7 @@
             <p class="dashboard-label">Average Practice Time (Last 30 Days)</p>
             <p class="dashboard-label">Average Days Between Sessions (Last 30 Days)</p>
         </div>
-        <a class="basic-button">View Session History</a>
+        <a class="basic-button" href="{% url 'learning_logs:view_sessions' %}">View Session History</a>
         <h2>Your Practice Habits over the Last 30 Days:</h2>
         <img src="data:image/png;base64,{{ consistency_chart }}" alt="Consistency Chart" class="dashboard-chart">
         <img src="data:image/png;base64,{{ duration_chart }}" alt="Duration Chart" class="dashboard-chart">

@@ -77,7 +77,7 @@ nav {
     margin: 0 0 1.5vh 0;
 }
 
-.auth-menu {
+.welcome-menu {
     display: flex;
     align-items: center;
     gap: 4%;
@@ -118,7 +118,7 @@ nav {
     margin: 0 1vw 0 0;
 }
 
-.date-search-button {
+.session-table-options {
     background-color: var(--button-color-light-blue);
     padding: 1vh 1.5vw 1vh 1.5vw;
     border: 0;
@@ -130,19 +130,19 @@ nav {
     cursor: pointer;
 }
 
-.session-form-container {
+.item-form-container {
     display: flex;
     flex-direction: column;
     width: 60%;
     align-items: center;
 }
 
-.session-form-container > h2 {
+.item-form-container > h2 {
     margin: 4vh 0 0 0;
     left: 0;
 }
 
-.edit-session-form {
+.item-form {
     margin: var(--content-margin);
     font-weight: bold;
     display: flex;
@@ -151,13 +151,13 @@ nav {
     margin: 0;
 }
 
-.edit-session-form > * {
+.item-form > * {
     font-size: 1rem;
     margin: 0 0 1vh 0;
     padding: 0.5vh 0 0.5vh 0;
 }
 
-.edit-session-form input[type=date] {
+.item-form input[type=date] {
     width: 23%;
     border-width: 0.2vh 0.4vw 0.2vh 0.4vw;
     border-color: #ffffff;
@@ -165,7 +165,7 @@ nav {
     border-radius: 2vw;
 }
 
-.edit-session-form input[type=number] {
+.item-form input[type=number] {
     width: 23%;
     border-width: 0.3vh 0.6vw 0.3vh 0.6vw;
     border-color: #ffffff;
@@ -173,7 +173,7 @@ nav {
     border-radius: 3vw;
 }
 
-.edit-session-form select {
+.item-form select {
     width: 80%;
     border-width: 0.3vh 0.6vw 0.3vh 0.6vw;
     border-color: #ffffff;
@@ -181,7 +181,7 @@ nav {
     border-radius: 3vw;
 }
 
-.session-form-options {
+.item-form-options {
     display: flex;
     justify-content: left;
     margin: 1vh 0 0 0;

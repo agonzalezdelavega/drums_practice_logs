@@ -17,6 +17,10 @@ class SourceForm(forms.ModelForm):
         
 # Form for entering new exercises found in print media
 class PrintExerciseForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(PrintExerciseForm, self).__init__(*args, **kwargs)
+        self.fields['source'].queryset = Source.objects.filter(user=user, type="book")
+    
     class Meta:
         model = Exercise
         fields = [
@@ -31,6 +35,10 @@ class PrintExerciseForm(forms.ModelForm):
 
 # Form for entering new exercises found in online media
 class OnlineExerciseForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(OnlineExerciseForm, self).__init__(*args, **kwargs)
+        self.fields['source'].queryset = Source.objects.filter(user=user).exclude(type="book")
+                                                               
     class Meta:
         model = Exercise
         fields = [
