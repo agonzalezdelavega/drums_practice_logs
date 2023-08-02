@@ -188,3 +188,37 @@ nav {
     margin: 1vh 0 0 0;
     gap: 1vw;
 }
+
+.auth-form-container {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.login-form, .signup-form {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    margin-top: var(--content-margin);
+    padding: 10vh 0 3vh 0;
+    width: 60%;
+}
+
+.signup-form {
+    gap: 2vh 0;
+}
+
+.signup-form .helptext, .signup-form .errorlist, .login-form .helptext, .login-form .errorlist {
+    display: none;
+}
+
+.signup-form button {
+    padding: 1.2vh 0 1.2vh 0;
+    width: 30%;
+}
+
+.login-form button {
+    margin-top: var(--content-margin);
+    padding: 1.2vh 1.5vw 1.2vh 1.5vw;
+    width: 25%;
+}
