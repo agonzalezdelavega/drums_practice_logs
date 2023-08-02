@@ -10,11 +10,10 @@
         </form>
         <a class="session-table-options" href="{% url 'learning_logs:view_sessions' %}">View Last 30 Days</a>
         <a class="session-table-options" href="{% url 'learning_logs:new_session' %}">Add Session</a>
+    </div>
     {% if session_data|length == 0 %}
-        <p><strong>No records were found for the given date range.</strong></p>
-    </div>
+    <p><strong>No records were found for the given date range.</strong></p>
     {% else %}
-    </div>
     <table class="session-history">
         <thead>
             <tr>
