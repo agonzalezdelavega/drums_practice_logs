@@ -13,17 +13,43 @@ td, th {
     padding: 0.5rem;
 }
 
-.edit-session-button {
-    display: none;
+.edit-icon {
+    visibility: hidden;
+    border: 0;
 }
 
-tr:hover > .edit-session-button, .edit-session-button:hover {
-    display: block;
-    border: 0;
-    background-color: var(--bg-color-white);
+tr:hover > .edit-icon {
+    visibility: visible;
 }
 
 tr:hover > .session-data {
     font-weight: bold;
     background-color: #bcc7e0;
+}
+
+.sources-table-container, .exercise-table-container {
+    margin: var(--content-margin);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.sources-exercises-table {
+    border-collapse: collapse;
+    width: 50vw;
+    margin: 0 0 3vh 0;
+}
+
+caption {
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin: 0 0 3vh 0;
+}
+
+.source-exercise-button {
+    display: flex;
+    align-items: center;
+    padding: 0.8vh 1.3vw 0.8vh 1.3vw;
+    margin: 0 0 5vh 0;
 }

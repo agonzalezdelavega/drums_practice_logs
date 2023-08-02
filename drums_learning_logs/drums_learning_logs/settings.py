@@ -12,7 +12,8 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     'learning_logs',
-    # Django apps
+    'users',
+    # Django defaults
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,3 +99,6 @@ STATIC_URL = 'static/'
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Login Settings
+LOGIN_URL = "users:login"

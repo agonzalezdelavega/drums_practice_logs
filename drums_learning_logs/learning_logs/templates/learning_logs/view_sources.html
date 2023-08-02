@@ -1,0 +1,97 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+<div class="sources-table-container">
+{% if sources|length != 0 %}
+<table class="sources-exercises-table">
+    <caption>Sources</caption>
+    <thead>
+        <tr>
+            <th>Source Name</th>
+            <th>Author</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for source in sources %}
+        <tr>
+            <td>{{ source.name }}</td>
+            <td>{{ source.author }}</td>
+            <td>{{ source.type }}</td>
+            <td class="edit-icon"><a href="{% url 'learning_logs:edit_source' source.id %}"><span class="material-symbols-outlined">edit</span></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a class="basic-button source-exercise-button" href="{% url 'learning_logs:new_source' %}"><span class="material-symbols-outlined">add</span>Add New</a>
+
+
+{% if online_sources|length == 0 %}
+    <p>Exercises (Online Sources)</p>
+    <p>No entries available</p>
+{% else %}
+<table class="sources-exercises-table">
+    <caption>Exercises (Online Sources)</caption>
+    <thead>
+        <tr>
+            <th>Exercise Name</th>
+            <th>Source</th>
+            <th>Link</th>
+            <th>Times Practiced</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for source in online_sources %}
+        {% for exercise in exercises %}
+            {% if exercise.source_id == source.id %}
+            <tr>
+                <td>{{ exercise.name }}</td>
+                <td>{{ source.name }}</td>
+                <td>{{ exercise.link }}</td>
+                <td>{{ exercise.times_practiced }}</td>
+                <td class="edit-icon"><a href="{% url 'learning_logs:edit_online_exercise' exercise.id %}"><span class="material-symbols-outlined">edit</span></a></td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </tbody>
+{% endif %}
+</table>
+<a class="basic-button source-exercise-button" href="{% url 'learning_logs:new_online_exercise' %}"><span class="material-symbols-outlined">add</span>Add New</a>
+
+{% if print_sources|length != 0 %}
+<table class="sources-exercises-table">
+    <caption>Exercises (Print Sources)</caption>
+    <thead>
+        <tr>
+            <th>Exercise Name</th>
+            <th>Source</th>
+            <th>Page</th>
+            <th>Times Practiced</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for source in print_sources %}
+        {% for exercise in exercises %}
+            {% if exercise.source_id == source.id %}
+            <tr>
+                <td>{{ exercise.name }}</td>
+                <td>{{ source.name }}</td>
+                <td>{{ exercise.page }}</td>
+                <td>{{ exercise.times_practiced }}</td>
+                <td class="edit-icon"><a href="{% url 'learning_logs:edit_print_exercise' exercise.id %}"><span class="material-symbols-outlined">edit</span></a></td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </tbody>
+{% endif %}
+</table>
+<a class="basic-button source-exercise-button" href="{% url 'learning_logs:new_print_exercise' %}"><span class="material-symbols-outlined">add</span>Add New</a>
+
+{% else %}
+<a class="basic-button">Add New Source</a>
+{% endif %}
+</div>
+{% endblock content %}

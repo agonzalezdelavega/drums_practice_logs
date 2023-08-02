@@ -17,21 +17,23 @@
         <ul class="navbar-link-list">
             <li>
                 <span class="material-symbols-outlined home-button">
-                    <a class="navbar-link" href="{% url 'index' %}">home</a>
+                    <a class="navbar-link" href="{% url 'learning_logs:index' %}">home</a>
                 </span>
             </li>
             <li>
-                <a class="navbar-link" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="navbar-link" href="{% url 'learning_logs:dashboard' %}">Dashboard</a>
             </li>
             <li>
-                <a class="navbar-link" href="{% url 'view_sessions' %}">Sessions</a>
-            </li>
-            <li>
-                <a class="navbar-link" href="{% url 'new_session' %}">Add New Session</a>
+                <a class="navbar-link" href="{% url 'learning_logs:view_sessions' %}">Sessions</a>
             </li>
         </ul>
         <ul class="navbar-link-list">
-            <li><a class="navbar-link">Log In</a></li>
+            {% if user.is_authenticated %}
+            <li><a class="navbar-link" href="{% url 'users:logout' %}">Log Out</a></li>
+            {% else %}
+            <li><a class="navbar-link" href="{% url 'users:sign_up' %}">Sign Up</a></li>
+            <li><a class="navbar-link" href="{% url 'users:login' %}">Log In</a></li>
+            {% endif %}
         </ul>
     </nav>
     <main>
