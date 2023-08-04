@@ -1,13 +1,17 @@
 variable "prefix" {
   type    = string
-  default = "learning_logs"
+  default = "drums-practice-logs"
 }
 
 variable "rds_user" {
   type = string
 }
 
+variable "dns_zone_name" {
+  type = string
+}
+
 variable "rds_snapshot_identifier" {
   type    = string
-  default = "learninglogs"
+  default = "practicelogs"
 }
