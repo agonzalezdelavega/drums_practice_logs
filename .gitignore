@@ -168,3 +168,5 @@ cython_debug/
 **terraform/.terraform*
 **terraform/terraform.tfvars*
 **terraform/terraform.tfstate*
+
+**scripts/ec2-setup.txt

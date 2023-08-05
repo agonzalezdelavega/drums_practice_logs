@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM python:3.10
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -11,8 +11,9 @@ RUN apk add --update --no-cache postgresql-client jpeg-dev
 RUN apk add --update --no-cache --virtual .build-deps \
       libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev \
       # Matplotlib and Numpy dependencies
-      build-base python3-dev py3-pip freetype-dev libpng-dev openblas-dev
-RUN pip install numpy matplotlib
+      build-base python3-dev py3-pip freetype-dev libpng-dev openblas-dev \
+      # MySQL dependencies
+     default-libmysqlclient-dev build-essential libssl-dev pkg-config
 RUN pip install --no-cache-dir -r /requirements.txt
 RUN apk del .build-deps
 
@@ -23,11 +24,6 @@ COPY ./drums_practice_logs /app
 COPY ./scripts/ /scripts/
 RUN chmod +x /scripts/*
 
-# RUN mkdir -p /vol/web/media
-# RUN mkdir -p /vol/web/static
-# RUN adduser -D user
-# RUN chown -R user:user /vol/
-# RUN chmod -R 755 /vol/web
 USER user
 
 VOLUME /vol/web
