@@ -9,12 +9,24 @@ from io import BytesIO
 import urllib, base64
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+import logging
+import sys
 
 default_start_date = dt.today() - timedelta(days=30)
 default_end_date = dt.today()
 
 
+logger = logging.getLogger('neo-get-data')
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler(stream=sys.stdout)
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+
 def index(request):
+    logger.info('Welcome to the drums practice logs!!!!!')
     return render(request, "practice_logs/index.html")
 
 @login_required

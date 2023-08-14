@@ -1,7 +1,7 @@
 # Load Balancer
 
 resource "aws_security_group" "lb" {
-  name   = "${var.prefix}-elb"
+  name   = "${local.prefix}-elb"
   vpc_id = aws_vpc.main.id
   ingress {
     from_port   = 80
@@ -26,7 +26,7 @@ resource "aws_security_group" "lb" {
 # ECS 
 
 resource "aws_security_group" "ecs" {
-  name   = "${var.prefix}-ecs-service"
+  name   = "${local.prefix}-ecs-service"
   vpc_id = aws_vpc.main.id
   egress {
     from_port = 3306
@@ -44,9 +44,9 @@ resource "aws_security_group" "ecs" {
     security_groups = [aws_security_group.lb.id]
   }
   egress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -54,7 +54,7 @@ resource "aws_security_group" "ecs" {
 # RDS
 
 resource "aws_security_group" "rds" {
-  name   = "${var.prefix}-rds"
+  name   = "${local.prefix}-rds"
   vpc_id = aws_vpc.main.id
 
   ingress {

@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drums_learning_logs.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drums_practice_logs.settings')
 
 application = get_wsgi_application()

@@ -6,7 +6,7 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "${var.prefix}-vpc-main"
+    Name = "${local.prefix}-vpc-main"
   }
 }
 
@@ -16,7 +16,7 @@ resource "aws_subnet" "practice_logs-public-a" {
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_region.current.name}a"
   tags = {
-    Name = "${var.prefix}-public-a"
+    Name = "${local.prefix}-public-a"
   }
   depends_on = [
     aws_vpc.main
@@ -29,7 +29,7 @@ resource "aws_subnet" "practice_logs-public-b" {
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_region.current.name}b"
   tags = {
-    Name = "${var.prefix}-public-b"
+    Name = "${local.prefix}-public-b"
   }
   depends_on = [
     aws_vpc.main
@@ -42,7 +42,7 @@ resource "aws_subnet" "practice_logs-private-a" {
   map_public_ip_on_launch = false
   availability_zone       = "${data.aws_region.current.name}a"
   tags = {
-    Name = "${var.prefix}-private-a"
+    Name = "${local.prefix}-private-a"
   }
   depends_on = [
     aws_vpc.main
@@ -55,7 +55,7 @@ resource "aws_subnet" "practice_logs-private-b" {
   map_public_ip_on_launch = false
   availability_zone       = "${data.aws_region.current.name}b"
   tags = {
-    Name = "${var.prefix}-private-b"
+    Name = "${local.prefix}-private-b"
   }
   depends_on = [
     aws_vpc.main
@@ -65,7 +65,7 @@ resource "aws_subnet" "practice_logs-private-b" {
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "${var.prefix}-internet-gateway"
+    Name = "${local.prefix}-internet-gateway"
   }
   depends_on = [
     aws_vpc.main
