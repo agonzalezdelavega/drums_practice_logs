@@ -2,13 +2,10 @@ from pathlib import Path
 import os
 from socket import gethostname, gethostbyname
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-SECRET_KEY = "fndyhausfnd89shf70h3"
-# DEBUG = False
-DEBUG = True
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 ALLOWED_HOSTS = ['*']
 ALLOWED_HOSTS.extend(
     filter(
@@ -34,6 +31,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'drums_practice_logs.middleware.healthcheck.HealthCheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,18 +63,20 @@ WSGI_APPLICATION = 'drums_practice_logs.wsgi.application'
 
 
 # Database
-
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'HOST': os.environ.get('DB_HOST'),
-        # 'NAME': os.environ.get('DB_NAME'),
-        # 'USER': os.environ.get('DB_USER'),
-        # 'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': os.environ.get('DB_HOST'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'PORT': '3306',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES'
+        }
     }
 }
+
 
 
 # Password validation
@@ -110,7 +110,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 
