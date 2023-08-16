@@ -28,8 +28,8 @@ resource "aws_db_instance" "practice_logs" {
 resource "aws_db_subnet_group" "db_subnet_group" {
   name = "practice_logs"
   subnet_ids = [
-    aws_subnet.practice_logs-private-a.id,
-    aws_subnet.practice_logs-private-b.id
+    aws_subnet.practice_logs-private-2a.id,
+    aws_subnet.practice_logs-private-2b.id
   ]
 }
 

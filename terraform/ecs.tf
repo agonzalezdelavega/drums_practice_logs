@@ -53,7 +53,7 @@ resource "aws_ecs_task_definition" "practice_logs" {
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 256
-  memory                   = 2048
+  memory                   = 1024
   execution_role_arn       = aws_iam_role.task_execution_role.arn
   task_role_arn            = aws_iam_role.app_iam_role.arn
   volume {
@@ -72,8 +72,8 @@ resource "aws_ecs_service" "practice_logs" {
   platform_version = "1.4.0"
   network_configuration {
     subnets = [
-      aws_subnet.practice_logs-private-a.id,
-      aws_subnet.practice_logs-private-b.id,
+      aws_subnet.practice_logs-private-2a.id,
+      aws_subnet.practice_logs-private-2b.id,
     ]
     security_groups = [aws_security_group.ecs.id]
   }

@@ -3,7 +3,7 @@
         "name": "drums-practice-logs",
         "image": "${app_image}",
         "essential": true,
-        "memory": 1024,
+        "memory": 512,
         "environment": [
             {"name": "AWS_REGION", "value": "${aws_region}"},
             {"name": "DB_HOST", "value": "${db_host}"},
@@ -16,7 +16,7 @@
         "mountPoints": [
             {
                 "readOnly": false,
-                "containerPath": "/vol/web",
+                "containerPath": "/app/static",
                 "sourceVolume": "static"
             }
         ],
@@ -52,7 +52,7 @@
         "mountPoints": [
             {
                 "readOnly": false,
-                "containerPath": "/vol/web",
+                "containerPath": "/app/static",
                 "sourceVolume": "static"
             }
         ],

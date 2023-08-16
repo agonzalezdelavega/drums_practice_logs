@@ -2,8 +2,8 @@ resource "aws_lb" "practice_logs_alb" {
   name               = "${local.prefix}-lb"
   load_balancer_type = "application"
   subnets = [
-    aws_subnet.practice_logs-public-a.id,
-    aws_subnet.practice_logs-public-b.id
+    aws_subnet.practice_logs-public-2a.id,
+    aws_subnet.practice_logs-public-2b.id
   ]
   security_groups = [aws_security_group.lb.id]
 }

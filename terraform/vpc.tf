@@ -1,7 +1,7 @@
 # VPC
 
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = "192.168.0.0/16"
   instance_tenancy     = "default"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -10,9 +10,9 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "practice_logs-public-a" {
+resource "aws_subnet" "practice_logs-public-2a" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = "192.168.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_region.current.name}a"
   tags = {
@@ -23,9 +23,9 @@ resource "aws_subnet" "practice_logs-public-a" {
   ]
 }
 
-resource "aws_subnet" "practice_logs-public-b" {
+resource "aws_subnet" "practice_logs-public-2b" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.2.0/24"
+  cidr_block              = "192.168.2.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_region.current.name}b"
   tags = {
@@ -36,9 +36,9 @@ resource "aws_subnet" "practice_logs-public-b" {
   ]
 }
 
-resource "aws_subnet" "practice_logs-private-a" {
+resource "aws_subnet" "practice_logs-private-2a" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.3.0/24"
+  cidr_block              = "192.168.3.0/24"
   map_public_ip_on_launch = false
   availability_zone       = "${data.aws_region.current.name}a"
   tags = {
@@ -49,9 +49,9 @@ resource "aws_subnet" "practice_logs-private-a" {
   ]
 }
 
-resource "aws_subnet" "practice_logs-private-b" {
+resource "aws_subnet" "practice_logs-private-2b" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.4.0/24"
+  cidr_block              = "192.168.4.0/24"
   map_public_ip_on_launch = false
   availability_zone       = "${data.aws_region.current.name}b"
   tags = {
@@ -72,29 +72,93 @@ resource "aws_internet_gateway" "main" {
   ]
 }
 
-resource "aws_eip" "eip1" {}
+# NAT Instance
 
-resource "aws_eip" "eip2" {}
-
-resource "aws_nat_gateway" "nat1" {
-  subnet_id     = aws_subnet.practice_logs-public-a.id
-  allocation_id = aws_eip.eip1.id
-  depends_on = [
-    aws_subnet.practice_logs-public-a,
-    aws_eip.eip1
-  ]
+data "aws_ami" "nat-instance-ami" {
+  owners      = ["amazon"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = [var.nat_ami_name] # Must be an Amazon Linux 2023 AMI
+  }
 }
 
-resource "aws_nat_gateway" "nat2" {
-  subnet_id     = aws_subnet.practice_logs-public-b.id
-  allocation_id = aws_eip.eip2.id
-  depends_on = [
-    aws_subnet.practice_logs-public-b,
-    aws_eip.eip2
-  ]
+resource "aws_iam_instance_profile" "nat_instance_profile" {
+  name = "${local.prefix}-nat-instances"
+  role = aws_iam_role.nat.name
 }
 
-resource "aws_route_table" "public" {
+resource "aws_network_interface" "nat-2a" {
+  subnet_id         = aws_subnet.practice_logs-public-2a.id
+  source_dest_check = false
+  security_groups   = [aws_security_group.nat.id]
+}
+
+resource "aws_eip" "eip-2a" {
+  network_interface = aws_network_interface.nat-2a.id
+}
+
+resource "aws_launch_template" "nat-2a" {
+  name          = "${local.prefix}-nat-2a"
+  image_id      = data.aws_ami.nat-instance-ami.id
+  instance_type = "t3.nano"
+  network_interfaces {
+    network_interface_id = aws_network_interface.nat-2a.id
+  }
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.nat_instance_profile.arn
+  }
+  user_data = filebase64("./templates/scripts/user-data.sh")
+}
+
+resource "aws_autoscaling_group" "nat-2a" {
+  availability_zones = [aws_subnet.practice_logs-public-2a.availability_zone]
+  desired_capacity   = 1
+  min_size           = 1
+  max_size           = 1
+  launch_template {
+    id      = aws_launch_template.nat-2a.id
+    version = "$Latest"
+  }
+}
+
+resource "aws_network_interface" "nat-2b" {
+  subnet_id         = aws_subnet.practice_logs-public-2b.id
+  source_dest_check = false
+  security_groups   = [aws_security_group.nat.id]
+}
+
+resource "aws_eip" "eip-2b" {
+  network_interface = aws_network_interface.nat-2b.id
+}
+
+resource "aws_launch_template" "nat-2b" {
+  name          = "${local.prefix}-nat-2b"
+  image_id      = data.aws_ami.nat-instance-ami.id
+  instance_type = "t3.nano"
+  network_interfaces {
+    network_interface_id = aws_network_interface.nat-2b.id
+  }
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.nat_instance_profile.arn
+  }
+  user_data = filebase64("./templates/scripts/user-data.sh")
+}
+
+resource "aws_autoscaling_group" "nat-2b" {
+  availability_zones = [aws_subnet.practice_logs-public-2b.availability_zone]
+  desired_capacity   = 1
+  min_size           = 1
+  max_size           = 1
+  launch_template {
+    id      = aws_launch_template.nat-2b.id
+    version = "$Latest"
+  }
+}
+
+# Route Tables
+
+resource "aws_route_table" "route-table-public" {
   vpc_id = aws_vpc.main.id
   route {
     cidr_block = "0.0.0.0/0"
@@ -102,38 +166,38 @@ resource "aws_route_table" "public" {
   }
 }
 
-resource "aws_route_table" "private1" {
+resource "aws_route_table" "route-table-private-2a" {
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat1.id
+    cidr_block           = "0.0.0.0/0"
+    network_interface_id = aws_network_interface.nat-2a.id
   }
 }
 
-resource "aws_route_table" "private2" {
+resource "aws_route_table" "route-table-private-2b" {
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat2.id
+    cidr_block           = "0.0.0.0/0"
+    network_interface_id = aws_network_interface.nat-2b.id
   }
 }
 
-resource "aws_route_table_association" "public1" {
-  route_table_id = aws_route_table.public.id
-  subnet_id      = aws_subnet.practice_logs-public-a.id
+resource "aws_route_table_association" "route-table-association-public-2a" {
+  subnet_id      = aws_subnet.practice_logs-public-2a.id
+  route_table_id = aws_route_table.route-table-public.id
 }
 
-resource "aws_route_table_association" "public2" {
-  route_table_id = aws_route_table.public.id
-  subnet_id      = aws_subnet.practice_logs-public-b.id
+resource "aws_route_table_association" "route-table-association-public-2b" {
+  subnet_id      = aws_subnet.practice_logs-public-2b.id
+  route_table_id = aws_route_table.route-table-public.id
 }
 
-resource "aws_route_table_association" "private1" {
-  route_table_id = aws_route_table.private1.id
-  subnet_id      = aws_subnet.practice_logs-private-a.id
+resource "aws_route_table_association" "route-table-association-private-2a" {
+  subnet_id      = aws_subnet.practice_logs-private-2a.id
+  route_table_id = aws_route_table.route-table-private-2a.id
 }
 
-resource "aws_route_table_association" "private2" {
-  route_table_id = aws_route_table.private2.id
-  subnet_id      = aws_subnet.practice_logs-private-b.id
+resource "aws_route_table_association" "route-table-association-private-2b" {
+  subnet_id      = aws_subnet.practice_logs-private-2b.id
+  route_table_id = aws_route_table.route-table-private-2b.id
 }

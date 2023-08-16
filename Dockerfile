@@ -18,13 +18,12 @@ COPY ./drums_practice_logs /app
 COPY ./scripts/ /scripts/
 RUN chmod +x /scripts/*
 
-RUN mkdir -p /vol/web/static
+RUN mkdir -p /app/static
 RUN adduser --system --no-create-home --disabled-login django_drums_practice_logs
 RUN chown -R django_drums_practice_logs .
-RUN chmod -R 755 /vol/web
-RUN python manage.py collectstatic --no-input
+RUN chmod -R 755 /app/static
 USER django_drums_practice_logs
 
-VOLUME /vol/web
+VOLUME /app/static
 
 CMD ["entrypoint.sh"]
