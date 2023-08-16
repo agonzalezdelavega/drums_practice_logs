@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = bool(int(os.environ.get('DEBUG', 0)))
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(
     filter(
         None,
@@ -111,7 +111,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/vol/web/static'
 
 # Default primary key field type
 

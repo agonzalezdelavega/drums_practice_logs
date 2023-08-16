@@ -9,6 +9,15 @@ resource "aws_security_group" "lb" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [
+      aws_subnet.practice_logs-private-a.cidr_block,
+      aws_subnet.practice_logs-private-b.cidr_block
+    ]
+  }
   ingress {
     from_port   = 443
     to_port     = 443
@@ -16,8 +25,8 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
-    from_port   = 8000
-    to_port     = 8000
+    from_port   = 9000
+    to_port     = 9000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -38,8 +47,8 @@ resource "aws_security_group" "ecs" {
     ]
   }
   ingress {
-    from_port       = 8000
-    to_port         = 8000
+    from_port       = 9000
+    to_port         = 9000
     protocol        = "tcp"
     security_groups = [aws_security_group.lb.id]
   }
