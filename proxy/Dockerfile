@@ -10,9 +10,9 @@ RUN chmod 555 /app/static
 RUN touch /etc/nginx/conf.d/default.conf
 RUN chown nginx:nginx /etc/nginx/conf.d/default.conf
 
-COPY ./entrypoint.sh entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x entrypoint.sh
 
 USER nginx
 
-CMD ["entrypoint.sh"]
+CMD ["/entrypoint.sh"]

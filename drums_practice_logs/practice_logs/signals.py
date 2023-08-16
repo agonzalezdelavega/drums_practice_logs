@@ -29,7 +29,7 @@ def update_dslp_on_delete(sender, instance, **kwargs):
     user_sessions = Session.objects.filter(exercise__in=user_exercises)
     
     if user_sessions.aggregate(Min('date'))['date__min'] == instance.date:
-        proceeding_session = user_sessions.order_by('date').filter(date__gt=instance.date)[0]
+        proceeding_session = user_sessions.order_by('date').filter(date__gte=instance.date)[0]
         new_dslp = 0
         user_sessions.filter(date=proceeding_session.date).update(days_since_last_practice=new_dslp)
     elif user_sessions.exclude(id=instance.id).filter(date=instance.date).count() == 0 and user_sessions.aggregate(Max("date"))["date__max"] != instance.date:

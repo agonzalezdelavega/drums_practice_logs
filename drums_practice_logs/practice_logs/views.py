@@ -110,14 +110,23 @@ def dashboard(request):
     sources = Source.objects.filter(user=request.user)
     exercises = Exercise.objects.filter(source__in=sources)
     session_data = pd.DataFrame(list(Session.objects.filter(exercise__in=exercises).values()))
+    
+    # Return empty dashboard if user has no session data available
+    if len(session_data) < 2:
+        context = {
+            'session_data': session_data
+        }
+        return render(request, "practice_logs/dashboard.html", context)
+    
+    # Dashboard data             
     curr_month = dt.strftime(dt.today(), "%Y-%m")
     days_of_month = calendar.monthrange(int(curr_month[0:4]),int(curr_month[5:]))[1]
     first_day_of_month = f"{curr_month}-01"
     last_day_of_month = f"{curr_month}-{days_of_month}"
-    
+
     days_practiced_curr_month = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], exercise__in=exercises).count()
     average_practice_time = round(session_data.groupby('date', as_index=False).sum()["time_minutes"].mean())
-    avg_days_between_practice = round(session_data.groupby('date', as_index=False).min()["days_since_last_practice"].mean())
+    avg_days_between_practice = round(session_data.groupby('date', as_index=False).mean()["days_since_last_practice"].mean())
     
     # Consistency Chart
     consistency = session_data.groupby('date', as_index=False).min()
@@ -136,7 +145,7 @@ def dashboard(request):
     consistency_chart_uri = urllib.parse.quote(consistency_chart_string)
     
     # Duration Chart    
-    practice_times = pd.DataFrame(list(Session.objects.values('date', 'time_minutes'))).groupby('date', as_index=False).sum()
+    practice_times = session_data[['date', 'time_minutes']].groupby('date', as_index=False).sum()
     average_practice_time_line = pd.DataFrame(data={'average': practice_times['time_minutes'].mean()}, index=range(0, practice_times.shape[0]))
 
     plt.figure(figsize=(18, 8))
@@ -153,14 +162,13 @@ def dashboard(request):
     duration_chart_string = base64.b64encode(buffer.read())
     duration_chart_uri = urllib.parse.quote(duration_chart_string)
     
-    # User statics
-
     context = {
         'consistency_chart': consistency_chart_uri,
         'duration_chart': duration_chart_uri,
         'days_practiced_curr_month': days_practiced_curr_month,
         'average_practice_time': average_practice_time,
-        'avg_days_between_practice': avg_days_between_practice
+        'avg_days_between_practice': avg_days_between_practice,
+        'session_data': session_data
     }
     
     return render(request, "practice_logs/dashboard.html", context)
@@ -170,14 +178,17 @@ def view_sources(request):
     sources = Source.objects.filter(user=request.user).values()
     online_sources = sources.exclude(type="book")
     print_sources = sources.filter(type="book")
-    source_ids = [source["id"] for source in sources]
-    exercises = Exercise.objects.filter(source_id__in=source_ids).values()
-    
+    online_source_ids = [source["id"] for source in online_sources]
+    print_source_ids = [source["id"] for source in print_sources]
+    online_exercises = Exercise.objects.filter(source_id__in=online_source_ids).values()
+    print_exercises = Exercise.objects.filter(source_id__in=print_source_ids).values()
+
     context = {
-        "sources": sources,
-        "exercises": exercises,
-        "online_sources": online_sources,
-        "print_sources": print_sources
+        'sources': sources,
+        'online_sources': online_sources,
+        'print_sources': print_sources,
+        'online_exercises': online_exercises,
+        'print_exercises': print_exercises
     }
     
     return render(request, "practice_logs/view_sources.html", context)
