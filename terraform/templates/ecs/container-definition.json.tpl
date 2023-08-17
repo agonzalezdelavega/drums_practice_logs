@@ -3,7 +3,7 @@
         "name": "drums-practice-logs",
         "image": "${app_image}",
         "essential": true,
-        "memory": 512,
+        "memory": 256,
         "environment": [
             {"name": "AWS_REGION", "value": "${aws_region}"},
             {"name": "DB_HOST", "value": "${db_host}"},
