@@ -28,8 +28,8 @@ resource "aws_db_instance" "practice_logs" {
 resource "aws_db_subnet_group" "db_subnet_group" {
   name = "practice_logs"
   subnet_ids = [
-    aws_subnet.practice_logs-private-a.id,
-    aws_subnet.practice_logs-private-b.id
+    aws_subnet.practice_logs-private-2a.id,
+    aws_subnet.practice_logs-private-2b.id
   ]
 }
 
@@ -42,9 +42,15 @@ data "aws_secretsmanager_random_password" "db_password" {
 
 # resource "aws_secretsmanager_secret" "secrets_manager_db_password" {
 #   name = "${local.prefix}-password"
+#   lifecycle {
+#     prevent_destroy = true
+#   }
 # }
 
 # resource "aws_secretsmanager_secret_version" "secrets_manager_db_password_version" {
 #   secret_id     = aws_secretsmanager_secret.secrets_manager_db_password.id
 #   secret_string = data.aws_secretsmanager_random_password.db_password.random_password
+#   lifecycle {
+#     prevent_destroy = true
+#   }
 # }

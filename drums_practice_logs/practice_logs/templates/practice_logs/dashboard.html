@@ -2,25 +2,31 @@
 {% block content %}
 <div class="dashboard">
     <div class="dashboard-heading">
-        <p class="dashboard-title">Welcome back, {{ user.username }}!</p>
+        <p class="dashboard-title">{{ user.first_name }}'s Dashboard</p>
         <div class="dashboard-add-items">
             <a class="basic-button" href="{% url 'practice_logs:new_session' %}">Add Session</a>
             <a class="basic-button" href="{% url 'practice_logs:view_sources' %}">Edit Learning Sources / Exercises</a>
         </div>
     </div>
     <div class="dashboard-content">
+    {% if session_data|length == 0 %}
+        <p><strong>No session data is available, start inserting new sessions to view your dashboard.</strong></p>
+    {% elif session_data|length < 3 %}
+        <p><strong>Enter more session data to view your dashboard.</strong></p>
+    {% else %}
         <div class="statistics">
             <p class="dashboard-stat">{{ days_practiced_curr_month }}d</p>
             <p class="dashboard-stat">{{ average_practice_time }} min.</p>
             <p class="dashboard-stat">{{ avg_days_between_practice }}d</p>
             <p class="dashboard-label">Total Days Practiced this Month</p>
-            <p class="dashboard-label">Average Practice Time (Last 30 Days)</p>
+            <p class="dashboard-label">Average Practice Time Per Day (Last 30 Days)</p>
             <p class="dashboard-label">Average Days Between Sessions (Last 30 Days)</p>
         </div>
         <a class="basic-button" href="{% url 'practice_logs:view_sessions' %}">View Session History</a>
         <h2>Your Practice Habits over the Last 30 Days:</h2>
         <img src="data:image/png;base64,{{ consistency_chart }}" alt="Consistency Chart" class="dashboard-chart">
         <img src="data:image/png;base64,{{ duration_chart }}" alt="Duration Chart" class="dashboard-chart">
+    {% endif %}
     </div>
 </div>
 {% endblock content %}

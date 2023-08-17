@@ -26,7 +26,7 @@ class Source(models.Model):
 
 class Exercise(models.Model):
     name = models.CharField(max_length=200)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE, blank=True, null=True)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
     page = models.IntegerField(default=1, blank=True, null=True)
     link = models.URLField(blank=True, null=True)
     times_practiced = models.IntegerField(default=0)
@@ -41,6 +41,6 @@ class Session(models.Model):
     date = models.DateField(auto_now_add=False, default=dt.today, 
                             validators=[MaxValueValidator(dt.today().date(), message=f"Please choose a day on or before today")])
     time_minutes = models.IntegerField(validators=[MinValueValidator(1)])
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, blank=True, null=True)
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     bpm = models.IntegerField()
-    days_since_last_practice = models.IntegerField(default=1)
+    days_since_last_practice = models.IntegerField(default=0)

@@ -67,7 +67,6 @@ class SessionForm(forms.ModelForm):
             "date": "Date", "time_minutes": "Time (minutes)", "exercise": "Exercise", "bpm": "BPM"
         }
         widgets = {
-            # "date": forms.widgets.NumberInput(attrs={'type': 'date'}),
             "date": forms.DateInput(attrs={
                 "type": "date",
                 "value": dt.today,
