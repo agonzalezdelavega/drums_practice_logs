@@ -124,7 +124,8 @@ def dashboard(request):
     first_day_of_month = f"{curr_month}-01"
     last_day_of_month = f"{curr_month}-{days_of_month}"
 
-    days_practiced_curr_month = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], exercise__in=exercises).count()
+    session_data_monthly = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], exercise__in=exercises).values()
+    days_practiced_curr_month =  len(pd.DataFrame(list(session_data_monthly)).groupby('date', as_index=False))
     average_practice_time = round(session_data.groupby('date', as_index=False).sum()["time_minutes"].mean())
     avg_days_between_practice = round(session_data.groupby('date', as_index=False).mean()["days_since_last_practice"].mean())
     

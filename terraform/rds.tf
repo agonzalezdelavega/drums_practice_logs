@@ -42,9 +42,15 @@ data "aws_secretsmanager_random_password" "db_password" {
 
 # resource "aws_secretsmanager_secret" "secrets_manager_db_password" {
 #   name = "${local.prefix}-password"
+#   lifecycle {
+#     prevent_destroy = true
+#   }
 # }
 
 # resource "aws_secretsmanager_secret_version" "secrets_manager_db_password_version" {
 #   secret_id     = aws_secretsmanager_secret.secrets_manager_db_password.id
 #   secret_string = data.aws_secretsmanager_random_password.db_password.random_password
+#   lifecycle {
+#     prevent_destroy = true
+#   }
 # }

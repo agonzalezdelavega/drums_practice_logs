@@ -37,7 +37,6 @@
             <th>Exercise Name</th>
             <th>Source</th>
             <th>Link</th>
-            <th>Times Practiced</th>
         </tr>
     </thead>
     <tbody>
@@ -46,8 +45,7 @@
             <tr>
                 <td>{{ exercise.name }}</td>
                 <td>{{ source.name }}</td>
-                <td>{{ exercise.link }}</td>
-                <td>{{ exercise.times_practiced }}</td>
+                <td><a href="{{ exercise.link }}" target="_blank">{{ exercise.link }}</a></td>
                 <td class="edit-icon"><a href="{% url 'practice_logs:edit_online_exercise' exercise.id %}"><span class="material-symbols-outlined">edit</span></a></td>
             </tr>
         {% endfor %}
@@ -68,7 +66,6 @@
             <th>Exercise Name</th>
             <th>Source</th>
             <th>Page</th>
-            <th>Times Practiced</th>
         </tr>
     </thead>
     <tbody>
@@ -78,7 +75,6 @@
                 <td>{{ exercise.name }}</td>
                 <td>{{ source.name }}</td>
                 <td>{{ exercise.page }}</td>
-                <td>{{ exercise.times_practiced }}</td>
                 <td class="edit-icon"><a href="{% url 'practice_logs:edit_print_exercise' exercise.id %}"><span class="material-symbols-outlined">edit</span></a></td>
             </tr>
         {% endfor %}

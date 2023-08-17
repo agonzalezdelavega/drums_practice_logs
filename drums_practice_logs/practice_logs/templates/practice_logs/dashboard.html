@@ -2,7 +2,7 @@
 {% block content %}
 <div class="dashboard">
     <div class="dashboard-heading">
-        <p class="dashboard-title">{{ user.username }}</p>
+        <p class="dashboard-title">{{ user.first_name }}'s Dashboard</p>
         <div class="dashboard-add-items">
             <a class="basic-button" href="{% url 'practice_logs:new_session' %}">Add Session</a>
             <a class="basic-button" href="{% url 'practice_logs:view_sources' %}">Edit Learning Sources / Exercises</a>
