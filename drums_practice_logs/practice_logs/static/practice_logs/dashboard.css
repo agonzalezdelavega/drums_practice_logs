@@ -48,9 +48,8 @@
     justify-content: center;
     width: 80%;
     grid-template-columns: 25% 40% 25%;
-    grid-template-rows: 15vh 10%;
+    grid-template-rows: 120px 80px;
     column-gap: 2vw;
-    row-gap: 0;
 }
 
 .dashboard-stat {
