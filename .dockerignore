@@ -1,4 +1,3 @@
-docker-compose.yaml
 README.md
 .git/
 .gitignore
@@ -7,4 +6,4 @@ test_data
 venv
 **db.sqlite3*
 **__pycache__*
-nginx
+proxy
