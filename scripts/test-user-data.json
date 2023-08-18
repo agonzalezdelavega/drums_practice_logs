@@ -1,0 +1,197 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 999,
+        "fields": {
+            "first_name": "John",
+            "last_name": "Doe",
+            "username": "dpltest",
+            "password": "pbkdf2_sha256$600000$LndtR0zxSDMcVqIOD4jpaJ$cpJRHYy1ds1EK+F00Q94szFNpVMEhgXQ2eA6pJQtmHM=",
+            "is_superuser": false
+        }
+    },
+    {
+        "model": "practice_logs.Source",
+        "pk": 997,
+        "fields": {
+            "name": "Stick Control",
+            "type": "book",
+            "author": "George Lawrence Stone",
+            "user": 999
+        }
+    },
+    {
+        "model": "practice_logs.Source",
+        "pk": 998,
+        "fields": {
+            "name": "Syncopation for the Modern Drummer",
+            "type": "book",
+            "author": "Ted Reed",
+            "user": 999
+        }
+    },
+    {
+        "model": "practice_logs.Source",
+        "pk": 999,
+        "fields": {
+            "name": "Drumeo",
+            "type": "video_guide",
+            "author": "Drumeo",
+            "user": 999
+        }
+    },
+    {
+        "model": "practice_logs.Exercise",
+        "pk": 997,
+        "fields": {
+            "name": "Review of Short Rolls in 6/8",            
+            "source": 997,
+            "page": 28,        
+            "link": "",            
+            "times_practiced": 3
+        }
+    },
+    {
+        "model": "practice_logs.Exercise",
+        "pk": 998,
+        "fields": {
+            "name": "Eight Notes, Eight Rests, and Quarter Notes",            
+            "source": 998,
+            "page": 30,        
+            "link": "",            
+            "times_practiced": 4
+        }
+    },
+    {
+        "model": "practice_logs.Exercise",
+        "pk": 999,
+        "fields": {
+            "name": "Six Stroke Roll",            
+            "source": 999,
+            "page": "1",        
+            "link": "https://www.drumeo.com/beat/six-stroke-roll/#Applications",            
+            "times_practiced": 4
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 988,
+        "fields": {
+            "date": "2023-08-01",
+            "time_minutes": 15,
+            "exercise": 997,
+            "bpm": 100,
+            "days_since_last_practice": 0
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 989,
+        "fields": {
+            "date": "2023-08-03",
+            "time_minutes": 15,
+            "exercise": 997,
+            "bpm": 100,
+            "days_since_last_practice": 2
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 990,
+        "fields": {
+            "date": "2023-08-04",
+            "time_minutes": "15",
+            "exercise": 998,
+            "bpm": 100,
+            "days_since_last_practice": 1
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 991,
+        "fields": {
+            "date": "2023-08-04",
+            "time_minutes": "15",
+            "exercise": 999,
+            "bpm": 100,
+            "days_since_last_practice": 0
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 992,
+        "fields": {
+            "date": "2023-08-07",
+            "time_minutes": "20",
+            "exercise": 997,
+            "bpm": 120,
+            "days_since_last_practice": 3
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 993,
+        "fields": {
+            "date": "2023-08-10",
+            "time_minutes": "20",
+            "exercise": 999,
+            "bpm": 120,
+            "days_since_last_practice": 3
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 994,
+        "fields": {
+            "date": "2023-08-12",
+            "time_minutes": "20",
+            "exercise": 998,
+            "bpm": 120,
+            "days_since_last_practice": 2
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 995,
+        "fields": {
+            "date": "2023-08-13",
+            "time_minutes": "15",
+            "exercise": 998,
+            "bpm": 100,
+            "days_since_last_practice": 1
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 996,
+        "fields": {
+            "date": "2023-08-15",
+            "time_minutes": "20",
+            "exercise": 999,
+            "bpm": 120,
+            "days_since_last_practice": 2
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 997,
+        "fields": {
+            "date": "2023-08-16",
+            "time_minutes": "15",
+            "exercise": 998,
+            "bpm": 110,
+            "days_since_last_practice": 1
+        }
+    },
+    {
+        "model": "practice_logs.Session",
+        "pk": 998,
+        "fields": {
+            "date": "2023-08-17",
+            "time_minutes": "15",
+            "exercise": 999,
+            "bpm": 100,
+            "days_since_last_practice": 1
+        }
+    }
+]
