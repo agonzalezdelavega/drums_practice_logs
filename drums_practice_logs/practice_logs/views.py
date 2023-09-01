@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Source, Exercise, Session
 from .forms import SessionForm, DateSearchForm, SourceForm, PrintExerciseForm, OnlineExerciseForm
-from datetime import datetime as dt, timedelta
+from datetime import datetime as dt, date, timedelta
 import calendar
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -109,7 +109,8 @@ def delete_session(request, session_id):
 def dashboard(request):
     sources = Source.objects.filter(user=request.user)
     exercises = Exercise.objects.filter(source__in=sources)
-    session_data = pd.DataFrame(list(Session.objects.filter(exercise__in=exercises).values()))
+    session_data = pd.DataFrame(list(Session.objects.filter(
+        date__range=[dt.today() - timedelta(days=30), dt.today()] ,exercise__in=exercises).values()))
     
     # Return empty dashboard if user has no session data available
     if len(session_data) < 2:
@@ -125,9 +126,10 @@ def dashboard(request):
     last_day_of_month = f"{curr_month}-{days_of_month}"
 
     session_data_monthly = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], exercise__in=exercises).values()
-    days_practiced_curr_month =  len(pd.DataFrame(list(session_data_monthly)).groupby('date', as_index=False))
+    days_practiced_curr_month =  len(pd.DataFrame(list(session_data_monthly)).groupby('date', as_index=False)) if len(session_data_monthly) > 0 else 0
     average_practice_time = round(session_data.groupby('date', as_index=False).sum()["time_minutes"].mean())
     avg_days_between_practice = round(session_data.groupby('date', as_index=False).mean()["days_since_last_practice"].mean())
+    days_since_last_practice = (date.today() - session_data['date'].max()).days
     
     # Consistency Chart
     consistency = session_data.groupby('date', as_index=False).min()
@@ -169,7 +171,8 @@ def dashboard(request):
         'days_practiced_curr_month': days_practiced_curr_month,
         'average_practice_time': average_practice_time,
         'avg_days_between_practice': avg_days_between_practice,
-        'session_data': session_data
+        'session_data': session_data,
+        'days_since_last_practice': days_since_last_practice
     }
     
     return render(request, "practice_logs/dashboard.html", context)

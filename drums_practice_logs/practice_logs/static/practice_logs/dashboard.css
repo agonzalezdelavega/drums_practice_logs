@@ -37,7 +37,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3vh;
     width: 80%;
     background-color: #ffffff;
     box-shadow: 0 4px 6px #1a1919;
@@ -63,7 +62,49 @@
     text-align: center;
 }
 
+.dashboard-view-sessions-button {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
 .dashboard-chart {
     height: 30%;
     width: 80%;
+}
+
+/* Days Since Last Practice */
+
+.days-since-last-practice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 0;
+    padding: 30px;
+    gap: 50px;
+}
+
+.days-since-last-practice-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.days-since-last-practice-data {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    padding: 10px 40px;
+    border-radius: 15px;
+    color: #ffffff;
+}
+
+.dslp-green {
+    background-color: #0a7c00;
+}
+
+.dslp-blue {
+    background-color: #00137c;
+}
+
+.dslp-red {
+    background-color: #e40039;
 }

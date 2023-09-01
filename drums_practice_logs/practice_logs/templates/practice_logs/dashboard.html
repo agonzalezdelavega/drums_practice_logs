@@ -22,11 +22,25 @@
             <p class="dashboard-label">Average Practice Time Per Day (Last 30 Days)</p>
             <p class="dashboard-label">Average Days Between Sessions (Last 30 Days)</p>
         </div>
-        <a class="basic-button" href="{% url 'practice_logs:view_sessions' %}">View Session History</a>
+        <div class="days-since-last-practice">
+            <p class="days-since-last-practice-label">Days Since Last Practice:</p>
+            <p class="days-since-last-practice-data">{{ days_since_last_practice }}</p>
+        </div>
+        <a class="basic-button dashboard-view-sessions-button" href="{% url 'practice_logs:view_sessions' %}">View Session History</a>
         <h2>Your Practice Habits over the Last 30 Days:</h2>
         <img src="data:image/png;base64,{{ consistency_chart }}" alt="Consistency Chart" class="dashboard-chart">
         <img src="data:image/png;base64,{{ duration_chart }}" alt="Duration Chart" class="dashboard-chart">
     {% endif %}
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script> 
+<script type="text/javascript">
+    if ('{{ days_since_last_practice }}' < 3) {
+        $('.days-since-last-practice-data').addClass('dslp-green');
+    } else if ('{{ days_since_last_practice }}' >= 3 && '{{ days_since_last_practice }}' < 5) {
+        $('.days-since-last-practice-data').addClass('dslp-blue');
+    } else {
+        $('.days-since-last-practice-data').addClass('dslp-red');
+    };
+</script>
 {% endblock content %}
