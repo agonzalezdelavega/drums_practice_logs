@@ -14,6 +14,7 @@ resource "aws_db_instance" "practice_logs" {
   final_snapshot_identifier = "drums-practice-logs"
   snapshot_identifier       = "drums-practice-logs"
   publicly_accessible       = false
+  ca_cert_identifier        = var.rds_certificate
   db_subnet_group_name      = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids    = [aws_security_group.rds.id]
   apply_immediately         = true
