@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Source, Exercise, Session
-from .forms import SessionForm, DateSearchForm, SourceForm, PrintExerciseForm, OnlineExerciseForm
+from .models import Source, Exercise, Session, Goal
+from .forms import SessionForm, DateSearchForm, SourceForm, PrintExerciseForm, OnlineExerciseForm, GoalsForm
 from datetime import datetime as dt, date, timedelta
 import calendar
 import pandas as pd
@@ -311,3 +311,53 @@ def delete_exercise(request, exercise_id):
     
     exercise.delete()
     return redirect("practice_logs:view_sources")
+
+@login_required
+def view_goals(request):
+    goals = Goal.objects.filter(user=request.user)
+    
+    context = {
+        "goals": goals
+    }
+    
+    return render(request, "practice_logs/view_goals.html", context)
+
+@login_required
+def new_goal(request):
+    if request.method == "POST":
+        form = GoalsForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("practice_logs:view_goals")
+    else:
+        form = GoalsForm(request.user)
+    context = {"form": form}
+    return render(request, "practice_logs/new_goal.html", context)
+    
+@login_required
+def edit_goal(request, goal_id):
+    goal = Goal.objects.get(id=goal_id)
+    
+    if goal.user != request.user:
+        raise Http404
+    
+    if request.method == "POST":
+        form = GoalsForm(request.user, instance=goal, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("practice_logs:view_goals")
+    else:
+        form = GoalsForm(request.user, instance=goal)
+        
+    context = {"form": form, "exercise": goal}
+    return render(request, "practice_logs/edit_goal.html", context)
+
+@login_required
+def delete_goal(request, goal_id):
+    goal = Goal.objects.get(id=goal_id)
+    
+    if goal.user != request.user:
+        raise Http404
+    
+    goal.delete()
+    return redirect("practice_logs:view_goals")

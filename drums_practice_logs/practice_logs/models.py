@@ -44,3 +44,19 @@ class Session(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     bpm = models.IntegerField()
     days_since_last_practice = models.IntegerField(default=0)
+    
+class Goal(models.Model):
+    FREQUENCIES = [
+        ("weekly", "Weekly"),
+        ("biweekly", "Biweekly"),
+        ("monthly", "Monthly"),
+        ("custom", "Custom")
+    ]
+    
+    start_date = models.DateField(auto_now_add=False, default=dt.today, 
+                            validators=[MinValueValidator(dt.today().date(), message=f"Please choose a day on or after today")])
+    end_date = models.DateField(auto_now_add=False, default=dt.today, 
+                            validators=[MinValueValidator(dt.today().date(), message=f"Please choose a day on or after today")])
+    frequency = models.CharField(choices=FREQUENCIES, max_length=8)
+    exercise = models.ForeignKey(Exercise, on_delete=models.SET_DEFAULT, default="", blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

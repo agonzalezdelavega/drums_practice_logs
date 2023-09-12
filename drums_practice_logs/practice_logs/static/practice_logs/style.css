@@ -222,3 +222,13 @@ nav {
     padding: 1.2vh 1.5vw 1.2vh 1.5vw;
     width: 25%;
 }
+
+/* Goals */
+
+.goals {
+    margin: var(--content-margin);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+

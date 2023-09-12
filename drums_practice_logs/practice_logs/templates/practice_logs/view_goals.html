@@ -1,0 +1,16 @@
+{% extends "practice_logs/base.html" %}
+{% block content %}
+<div class="goals">
+    {% if goals|length != 0 %}
+    <!-- Display card for each goal -->
+    {% for goal in goals %}
+        <div class="goal-card">
+            
+        </div>
+    {% endfor %}
+    {% endif %}
+    {% if goals|length <= 3 %}
+    <a href="{% url 'practice_logs:new_goal' %}" class="basic-button">New Goal</a>
+    {% endif %}
+</div>
+{% endblock content %}
