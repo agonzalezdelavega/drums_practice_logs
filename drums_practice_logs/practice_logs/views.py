@@ -327,6 +327,8 @@ def new_goal(request):
     if request.method == "POST":
         form = GoalsForm(request.user, request.POST)
         if form.is_valid():
+            new_goal = form.save(commit=False)
+            new_goal.user = request.user
             form.save()
             return redirect("practice_logs:view_goals")
     else:
@@ -349,7 +351,7 @@ def edit_goal(request, goal_id):
     else:
         form = GoalsForm(request.user, instance=goal)
         
-    context = {"form": form, "exercise": goal}
+    context = {"form": form, "goal": goal}
     return render(request, "practice_logs/edit_goal.html", context)
 
 @login_required

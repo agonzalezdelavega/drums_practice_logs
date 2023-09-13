@@ -87,10 +87,10 @@ class GoalsForm(forms.ModelForm):
     class Meta:
         model = Goal
         fields = [
-            "start_date", "end_date", "frequency", "exercise"
+            "exercise", "start_date", "end_date", "frequency", "period"
         ]
         labels = {
-            "start_date": "Start Date", "end_date": "End Date", "frequency": "Frequency", "exercise": "Exercise"
+            "exercise": "Exercise", "start_date": "Start Date", "end_date": "End Date", "frequency": "Frequency", "period": "Period"
         }
         widgets = {
             "start_date": forms.DateInput(attrs={

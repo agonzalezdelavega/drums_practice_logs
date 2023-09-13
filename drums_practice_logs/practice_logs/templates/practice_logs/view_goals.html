@@ -1,16 +1,29 @@
 {% extends "practice_logs/base.html" %}
 {% block content %}
 <div class="goals">
-    {% if goals|length != 0 %}
-    <!-- Display card for each goal -->
+    <div class="goals-heading">
+        <p class="goals-title">Your Practice Goals</p>
+        <p class="goals-description">
+            An important part of practicing is to set a consistent pace with reasonable challenges.
+            This view can help you set and track goals for your practice sessions.
+        </p>
+    </div>
+    <div class="goals-content">
     {% for goal in goals %}
         <div class="goal-card">
-            
+            <p class="goal-card-exercise">{{ goal.exercise }}</p>
+            <p class="goal-card-frequency">{{ goal.frequency }} times</p>
+            <p class="goal-card-period">{{ goal.period }}</p>
+            <a class="goal-card-edit" href="{% url 'practice_logs:edit_goal' goal.id %}"><span class="material-symbols-outlined">edit</span></a>
+            <p class="goal-card-label">Start Date: </p>
+            <p class="goal-card-date">{{ goal.start_date }}</p>
+            <p class="goal-card-label">End Date: </p>
+            <p class="goal-card-date">{{ goal.end_date }}</p>
         </div>
     {% endfor %}
-    {% endif %}
     {% if goals|length <= 3 %}
-    <a href="{% url 'practice_logs:new_goal' %}" class="basic-button">New Goal</a>
+    <a href="{% url 'practice_logs:new_goal' %}" class="basic-button new-goal-button">New Goal</a>
     {% endif %}
+    </div>
 </div>
 {% endblock content %}
