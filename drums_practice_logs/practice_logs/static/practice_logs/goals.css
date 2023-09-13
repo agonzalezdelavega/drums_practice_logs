@@ -1,0 +1,106 @@
+.goals {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    --card-color: #1e00a5;
+}
+
+.goals-heading {
+    background-color: var(--bg-color-dark-blue);
+    width: 100%;
+    padding: 2% 0 2% 0;
+    margin: 0;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: left;
+}
+
+.goals-title {
+    font-size: 2.5rem;
+    font-weight: bolder;
+    color: var(--font-color-white);
+    margin: 0 2%;
+}
+
+.goals-description {
+    font-weight: bold;
+    color: var(--font-color-white);
+    margin: 0 2%;
+}
+
+.goals-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px #1a1919;
+
+}
+
+.goal-card {
+    border: 2px solid var(--card-color);
+    width: 85%;
+    margin: 20px;
+    display: grid;
+    grid-template-rows: repeat(3, 40px);                 
+    grid-template-columns: 100px 90px 10px 85px 10px 90px 10px 100px 295px 50px;
+    font-weight: bold;
+}
+
+.goal-card-exercise {
+    grid-column: 1 / 5;
+    margin: 0;
+    text-align: center;
+    padding: 12px 15px;
+    color: var(--font-color-white);
+    background-color: var(--card-color);
+}
+
+.goal-card-frequency {
+    grid-column: 5 / 7;
+    padding: 12px 15px;
+    text-align: center;
+    margin: 0;
+    color: var(--font-color-white);
+    background-color: #2320c9be;
+}
+
+.goal-card-period {
+    grid-column: 7 / 9;
+    padding: 12px 15px;
+    text-align: center;
+    margin: 0;
+    color: var(--font-color-white);
+    background-color: #2f4dd3af;
+    border-bottom-right-radius: 25px;
+}
+
+.goal-card-edit {
+    grid-column: 10;
+    text-align: center;
+    color: var(--font-color-white);
+    background-color: var(--card-color);
+    border-bottom-left-radius: 50px;
+    width: 50px;
+    padding: 5px 0 0 0;
+}
+
+.goal-card-label {
+    grid-column: 1;
+    margin-left: 15px;
+}
+
+.goal-card-date {
+    grid-column: 2 / 4;
+}
+
+.new-goal-button {
+    width: 100px;
+    margin: 20px 0 40px 0;
+}
