@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import urllib, base64
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import HttpResponse, Http404
 import logging
 import sys
+from asgiref.sync import async_to_sync, sync_to_async
 
 default_start_date = dt.today() - timedelta(days=30)
 default_end_date = dt.today()
@@ -34,7 +35,9 @@ def new_session(request):
     if request.method == "POST":
         form = SessionForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            new_session = form.save(commit=False)
+            new_session.user = request.user
+            new_session.save()
             return redirect("practice_logs:view_sessions")
     else:
         form = SessionForm(request.user)
@@ -55,6 +58,7 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
     fields = [field.name.replace("_", " ").title() for field in Session._meta.get_fields()[1:]]
     fields[fields.index("Time Minutes")] = "Time (Minutes)"
     fields[fields.index("Bpm")] = "BPM"
+    fields.remove("User")
     
     sources = Source.objects.filter(user=request.user)
     exercises = Exercise.objects.filter(source__in=sources)
@@ -78,9 +82,7 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
 def edit_session(request, session_id):
     session = Session.objects.get(id=session_id)
     
-    exercise = session.exercise
-    source = exercise.source
-    if source.user != request.user:
+    if session.user != request.user:
         raise Http404
     
     if request.method == "POST":
@@ -97,9 +99,8 @@ def edit_session(request, session_id):
 @login_required
 def delete_session(request, session_id):
     session = Session.objects.get(id=session_id)
-    exercise = session.exercise
-    source = exercise.source
-    if source.user != request.user:
+    
+    if session.user != request.user:
         raise Http404
     
     session.delete()
@@ -107,12 +108,10 @@ def delete_session(request, session_id):
 
 @login_required
 def dashboard(request):
-    sources = Source.objects.filter(user=request.user)
-    exercises = Exercise.objects.filter(source__in=sources)
     session_data = pd.DataFrame(list(Session.objects.filter(
-        date__range=[dt.today() - timedelta(days=30), dt.today()] ,exercise__in=exercises).values()))
+        date__range=[dt.today() - timedelta(days=30), dt.today()], user=request.user).values()))
     
-    # Return empty dashboard if user has no session data available
+    # Return empty dashboard if user does not have enough session data available
     if len(session_data) < 2:
         context = {
             'session_data': session_data
@@ -125,7 +124,7 @@ def dashboard(request):
     first_day_of_month = f"{curr_month}-01"
     last_day_of_month = f"{curr_month}-{days_of_month}"
 
-    session_data_monthly = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], exercise__in=exercises).values()
+    session_data_monthly = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], user=request.user).values()
     days_practiced_curr_month =  len(pd.DataFrame(list(session_data_monthly)).groupby('date', as_index=False)) if len(session_data_monthly) > 0 else 0
     average_practice_time = round(session_data.groupby('date', as_index=False).sum()["time_minutes"].mean())
     avg_days_between_practice = round(session_data.groupby('date', as_index=False).mean()["days_since_last_practice"].mean())
@@ -244,7 +243,9 @@ def new_print_exercise(request):
     if request.method == "POST":
         form = PrintExerciseForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            new_exercise = form.save(commit=False)
+            new_exercise.user = request.user
+            new_exercise.save()
             return redirect("practice_logs:view_sources")
     else:
         form = PrintExerciseForm(request.user)
@@ -256,7 +257,9 @@ def new_online_exercise(request):
     if request.method == "POST":
         form = OnlineExerciseForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            new_exercise = form.save(commit=False)
+            new_exercise.user = request.user
+            new_exercise.save()
             return redirect("practice_logs:view_sources")
     else:
         form = OnlineExerciseForm(request.user)
@@ -363,3 +366,20 @@ def delete_goal(request, goal_id):
     
     goal.delete()
     return redirect("practice_logs:view_goals")
+
+@sync_to_async
+def get_goal_data(id, user_id):
+    goal = Goal.objects.get(id=id)
+    if goal.user != user_id:
+        raise Http404    
+    return goal
+
+@sync_to_async
+@login_required
+@async_to_sync
+async def update_goal_notifications(request, goal_id):
+    goal = await get_goal_data(goal_id, request.user)
+    
+    goal.reminder = not goal.reminder
+    await goal.asave()
+    return HttpResponse()

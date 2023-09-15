@@ -5,6 +5,7 @@
     justify-content: center;
     align-items: center;
     --card-color: #1e00a5;
+    padding: 0 0 30px 0;
 }
 
 .goals-heading {
@@ -40,7 +41,7 @@
     width: 80%;
     background-color: #ffffff;
     box-shadow: 0 4px 6px #1a1919;
-
+    padding: 0 0 30px 0;
 }
 
 .goal-card {
@@ -48,22 +49,22 @@
     width: 85%;
     margin: 20px;
     display: grid;
-    grid-template-rows: repeat(3, 40px);                 
-    grid-template-columns: 100px 90px 10px 85px 10px 90px 10px 100px 295px 50px;
+    grid-template-rows: 40px repeat(2, 40px) 30px;              
+    grid-template-columns: 100px 100px 100px 95px 100px 50px 245px 50px;
     font-weight: bold;
 }
 
 .goal-card-exercise {
-    grid-column: 1 / 5;
+    grid-column: 1 / 4;
     margin: 0;
-    text-align: center;
+    text-align: left;
     padding: 12px 15px;
     color: var(--font-color-white);
     background-color: var(--card-color);
 }
 
 .goal-card-frequency {
-    grid-column: 5 / 7;
+    grid-column: 4 / 5;
     padding: 12px 15px;
     text-align: center;
     margin: 0;
@@ -72,7 +73,7 @@
 }
 
 .goal-card-period {
-    grid-column: 7 / 9;
+    grid-column: 5 / 6;
     padding: 12px 15px;
     text-align: center;
     margin: 0;
@@ -81,8 +82,30 @@
     border-bottom-right-radius: 25px;
 }
 
+.goal-card-reminder {
+    grid-column: 6 / 7;
+    padding: 6px 15px;
+}
+
+.notifications {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+
+.notifications-enabled {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+  }
+
 .goal-card-edit {
-    grid-column: 10;
+    grid-column: 8;
     text-align: center;
     color: var(--font-color-white);
     background-color: var(--card-color);
@@ -94,13 +117,72 @@
 .goal-card-label {
     grid-column: 1;
     margin-left: 15px;
+    padding: 10px 0;
 }
 
 .goal-card-date {
     grid-column: 2 / 4;
+    padding: 10px 0;
 }
 
 .new-goal-button {
     width: 100px;
     margin: 20px 0 40px 0;
+}
+
+.progress-container {
+    grid-row: 4;
+    grid-column: 1 / 4;
+    position: relative;
+}
+
+.progress-bar {
+    margin: 8px 0 0 15px;
+    height: 15x;
+    width: 200px;
+    background: #ffffff;
+    border: 1px solid #666666;
+}
+
+progress::-moz-progress-bar {
+    background: #02f768;
+}
+
+progress::-webkit-progress-bar {
+    background: #ffffff;
+}
+
+progress::-webkit-progress-value {  
+    background: #02f768;
+}
+
+.progress-text {
+    position: absolute;
+    transform: translateX(-50%);
+    top: 8px;
+    left: 40%;
+}
+
+/* Goals Form */
+
+.goals-form {
+    display: grid;
+    grid-template-rows: repeat(6, 40px);
+    grid-template-columns: 120px 300px;
+    row-gap: 10px;
+    margin-top: 15px;
+    align-items: center;
+}
+
+.goals-form select, input {
+    padding: 10px 0;
+    text-justify: center;
+}
+
+#id_start_date, #id_end_date {
+    padding: 10px 10px 10px 0;
+}
+
+#id_reminder {  
+    width: 20px;
 }

@@ -11,17 +11,45 @@
     <div class="goals-content">
     {% for goal in goals %}
         <div class="goal-card">
+            {% if goal.exercise == None %}
+            <p class="goal-card-exercise">Any Exercise</p>
+            {% else %}
             <p class="goal-card-exercise">{{ goal.exercise }}</p>
+            {% endif %}
             <p class="goal-card-frequency">{{ goal.frequency }} times</p>
             <p class="goal-card-period">{{ goal.period }}</p>
+            <span id="reminder-{{ goal.id }}" class="material-symbols-outlined goal-card-reminder notifications">notifications</span>
             <a class="goal-card-edit" href="{% url 'practice_logs:edit_goal' goal.id %}"><span class="material-symbols-outlined">edit</span></a>
             <p class="goal-card-label">Start Date: </p>
             <p class="goal-card-date">{{ goal.start_date }}</p>
             <p class="goal-card-label">End Date: </p>
             <p class="goal-card-date">{{ goal.end_date }}</p>
+            <div class="progress-container">
+                <progress class="progress-bar" value="{{ goal.progress_percent }}" max="100"></progress>
+                <div class="progress-text">{{ goal.progress_percent }}%</div>
+            </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script> 
+            {% if goal.reminder %}
+            <script type="text/javascript">
+                $('#reminder-{{ goal.id }}').toggleClass('notifications-enabled');
+            </script>
+            {% endif %}
+            <script type="text/javascript">
+                $('#reminder-{{ goal.id }}').click(() => {
+                    $('#reminder-{{ goal.id }}').toggleClass('notifications-enabled')
+                    $.ajax({
+                        url: "{% url 'practice_logs:update_goal_notifications' goal.id %}",
+                        error: function(jqXHR, textStatus, err) {
+                            console.error(textStatus);
+                            console.error(err);
+                            $('#reminder-{{ goal.id }}').toggleClass('notifications-active')
+                        }
+                    });
+                });
+            </script>
         </div>
     {% endfor %}
-    {% if goals|length <= 3 %}
+    {% if goals|length < 3 %}
     <a href="{% url 'practice_logs:new_goal' %}" class="basic-button new-goal-button">New Goal</a>
     {% endif %}
     </div>
