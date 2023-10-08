@@ -97,12 +97,13 @@
 
 
 .notifications-enabled {
+    color: #b89602;
     font-variation-settings:
     'FILL' 1,
     'wght' 400,
     'GRAD' 0,
     'opsz' 24
-  }
+}
 
 .goal-card-edit {
     grid-column: 8;

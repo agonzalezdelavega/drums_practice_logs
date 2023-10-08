@@ -33,57 +33,59 @@ def update_dslp_on_delete(sender, instance, **kwargs):
         new_dslp = (proceeding_session.date - preceeding_session.date).days
         user_sessions.filter(date=proceeding_session.date).update(days_since_last_practice=new_dslp)
 
+## WIP: Update goal progress on session completion
+
 # Update progress on goal after saving a new session
-@receiver(post_save, sender=Session)
-def update_goals_on_save(sender, instance, **kwargs):
-    user = instance.user
-    exercise = instance.exercise
-    user_goals = Goal.objects.filter(user=user)
+# @receiver(post_save, sender=Session)
+# def update_goals_on_save(sender, instance, **kwargs):
+#     user = instance.user
+#     exercise = instance.exercise
+#     user_goals = Goal.objects.filter(user=user)
     
-    for goal in user_goals:
-        # Check if progress applies to current period
-        # 1. Get dates for current period
-        match goal.period:
-            case "Weekly":
-                check_start_date = max(instance.date - timedelta(days=7), goal.start_date)
-            case "Biweekly":
-                check_start_date = max(instance.date - timedelta(days=14), goal.start_date)
-            case "Monthly":
-                check_start_date = max(instance.date - timedelta(days=30), goal.start_date)
-        # 2. Check how many times this exercise has been practiced for the past period
-        # 2a. Use the appropriate filters if no exercise was defined for the user's goal
-        if goal.exercise == None:
-            session_count = Session.objects.filter(user=user, date__range=[check_start_date, goal.end_date]).count()
-        else:
-            session_count = Session.objects.filter(user=user, date__range=[check_start_date, goal.end_date], exercise=exercise).count()
-        # 3. If the goal has not been met yet for the current period, add it to the user's progress
-        if session_count < goal.frequency:
-            goal.progress += 1
-            goal.save()
+#     for goal in user_goals:
+#         # Check if progress applies to current period
+#         # 1. Get dates for current period
+#         match goal.period:
+#             case "Weekly":
+#                 check_start_date = max(instance.date - timedelta(days=7), goal.start_date)
+#             case "Biweekly":
+#                 check_start_date = max(instance.date - timedelta(days=14), goal.start_date)
+#             case "Monthly":
+#                 check_start_date = max(instance.date - timedelta(days=30), goal.start_date)
+#         # 2. Check how many times this exercise has been practiced for the past period
+#         # 2a. Use the appropriate filters if no exercise was defined for the user's goal
+#         if goal.exercise == None:
+#             session_count = Session.objects.filter(user=user, date__range=[check_start_date, goal.end_date]).count()
+#         else:
+#             session_count = Session.objects.filter(user=user, date__range=[check_start_date, goal.end_date], exercise=exercise).count()
+#         # 3. If the goal has not been met yet for the current period, add it to the user's progress
+#         if session_count < goal.frequency:
+#             goal.progress += 1
+#             goal.save()
     
-@receiver(pre_delete, sender=Session)
-def update_goals_on_delete(sender, instance, **kwargs):
-    user = instance.user
-    exercise = instance.exercise
-    user_goals = Goal.objects.filter(user=user, exercise_id__in=[exercise, None])
+# @receiver(pre_delete, sender=Session)
+# def update_goals_on_delete(sender, instance, **kwargs):
+#     user = instance.user
+#     exercise = instance.exercise
+#     user_goals = Goal.objects.filter(user=user, exercise_id__in=[exercise, None])
     
-    for goal in user_goals:
-        # Check if progress applies to current period
-        # 1. Get dates for current period
-        match goal.period:
-            case "weekly":
-                check_start_date = max(instance.date - timedelta(days=7), instance.start_date)
-            case "biweekly":
-                check_start_date = max(instance.date - timedelta(days=14), instance.start_date)
-            case "monthly":
-                check_start_date = max(instance.date - timedelta(days=30), instance.start_date)
-        # 2. Check how many times this exercise has been practiced for the past period
-        # 2a. Use the appropriate filters if no exercise was defined for the user's goal
-        if goal.exercise == None:
-            session_count = Session.objects.filter(user=user, date__in=[check_start_date, goal.end_date]).count()
-        else:
-            session_count = Session.objects.filter(user=user, date__in=[check_start_date, goal.end_date], exercise=exercise).count()
-        # 3. If the goal has not been met yet for the current period, add it to the user's progress
-        if session_count < instance.frequency:
-            goal.progress -= 1
-            goal.save()
+#     for goal in user_goals:
+#         # Check if progress applies to current period
+#         # 1. Get dates for current period
+#         match goal.period:
+#             case "weekly":
+#                 check_start_date = max(instance.date - timedelta(days=7), instance.start_date)
+#             case "biweekly":
+#                 check_start_date = max(instance.date - timedelta(days=14), instance.start_date)
+#             case "monthly":
+#                 check_start_date = max(instance.date - timedelta(days=30), instance.start_date)
+#         # 2. Check how many times this exercise has been practiced for the past period
+#         # 2a. Use the appropriate filters if no exercise was defined for the user's goal
+#         if goal.exercise == None:
+#             session_count = Session.objects.filter(user=user, date__in=[check_start_date, goal.end_date]).count()
+#         else:
+#             session_count = Session.objects.filter(user=user, date__in=[check_start_date, goal.end_date], exercise=exercise).count()
+#         # 3. If the goal has not been met yet for the current period, add it to the user's progress
+#         if session_count < instance.frequency:
+#             goal.progress -= 1
+#             goal.save()

@@ -28,13 +28,8 @@
                 <progress class="progress-bar" value="{{ goal.progress_percent }}" max="100"></progress>
                 <div class="progress-text">{{ goal.progress_percent }}%</div>
             </div>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script> 
-            {% if goal.reminder %}
             <script type="text/javascript">
-                $('#reminder-{{ goal.id }}').toggleClass('notifications-enabled');
-            </script>
-            {% endif %}
-            <script type="text/javascript">
+                // Set/Unset reminders for a goal 
                 $('#reminder-{{ goal.id }}').click(() => {
                     $('#reminder-{{ goal.id }}').toggleClass('notifications-enabled')
                     $.ajax({
@@ -47,6 +42,11 @@
                     });
                 });
             </script>
+            {% if goal.reminder %}
+            <script type="text/javascript">
+                $('#reminder-{{ goal.id }}').toggleClass('notifications-enabled');
+            </script>
+            {% endif %}
         </div>
     {% endfor %}
     {% if goals|length < 3 %}
