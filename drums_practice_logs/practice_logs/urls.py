@@ -22,5 +22,6 @@ urlpatterns = [
     path("goals/view_goals", views.view_goals, name="view_goals"),
     path("goals/new_goals", views.new_goal, name="new_goal"),
     path("goals/edit_goals/<int:goal_id>/", views.edit_goal, name="edit_goal"),
-    path("goals/delete_goals/<int:goal_id>/", views.delete_goal, name="delete_goal")
+    path("goals/delete_goals/<int:goal_id>/", views.delete_goal, name="delete_goal"),
+    path("goals/update_goal_notifications/<int:goal_id>/", views.update_goal_notifications, name="update_goal_notifications"),
 ]

@@ -8,7 +8,7 @@
         {{ form.as_table }}
         <div class="item-form-options">
             <button name="submit" class="basic-button">Add Goal</button>
-            <a class="basic-button" href="/sessions/view_goals">Cancel</a>
+            <a class="basic-button" href="{% url 'practice_logs:view_goals' %}">Cancel</a>
         </div>
     </form>
 </div>

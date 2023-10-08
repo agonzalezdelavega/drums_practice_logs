@@ -6,6 +6,26 @@
     <form action="{% url 'practice_logs:edit_session' session.id %}" method="post" class="item-form">
         {% csrf_token %}
         {{ form.as_table }}
+        <fieldset>
+            <legend>Add up to five exercises to this session:</legend>
+            {{ formset.management_form }}
+            <div id="session-exercises">
+                {% for form in formset.forms %}
+                <div class="exercise-form">
+                    {{ form.exercise }}
+                    {{ form.bpm }}
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field }}
+                    {% endfor %}
+                    {{ form.DELETE }}
+                    {% if form.errors %}
+                    <p>The following errors have been found in this exercise:</p>
+                        {{ form.errors }}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </fieldset>
         <div class="item-form-options">
             <button type="submit" class="basic-button">Submit</button>
             <a class="basic-button" href="{% url 'practice_logs:view_sessions' %}">Cancel</a>

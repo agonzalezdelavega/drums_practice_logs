@@ -96,6 +96,10 @@ nav {
     cursor: pointer;
 }
 
+.basic-button:disabled {
+    background-color: #3881f6a6;
+}
+
 .sessions {
     margin: var(--content-margin);
     display: flex;
@@ -221,4 +225,20 @@ nav {
     margin-top: var(--content-margin);
     padding: 1.2vh 1.5vw 1.2vh 1.5vw;
     width: 25%;
+}
+
+.delete-session-exercise {
+    color: #cc0303;
+    background: none;
+    border: none;
+}
+
+.item-form input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.item-form input::-webkit-outer-spin-button,
+.item-form input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

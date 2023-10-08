@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Source, Exercise, Session, Goal
-from .forms import SessionForm, DateSearchForm, SourceForm, PrintExerciseForm, OnlineExerciseForm, GoalsForm
+from .models import Source, Exercise, Session, SessionExercise, Goal
+from .forms import SessionForm, DateSearchForm, SourceForm, PrintExerciseForm, \
+    OnlineExerciseForm, GoalsForm, NewSessionExerciseFormSet, EditSessionExerciseFormSet
 from datetime import datetime as dt, date, timedelta
 import calendar
 import pandas as pd
@@ -8,9 +9,10 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import urllib, base64
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import HttpResponse, Http404
 import logging
 import sys
+from asgiref.sync import async_to_sync, sync_to_async
 
 default_start_date = dt.today() - timedelta(days=30)
 default_end_date = dt.today()
@@ -33,12 +35,24 @@ def index(request):
 def new_session(request):
     if request.method == "POST":
         form = SessionForm(request.user, request.POST)
-        if form.is_valid():
-            form.save()
+        formset = NewSessionExerciseFormSet(request.POST, form_kwargs={"user": request.user})
+        if form.is_valid() and formset.is_valid():
+            session = form.save(commit=False)
+            session.user = request.user
+            if session.user != request.user:
+                raise Http404
+            formset.instance = session
+            session.save()
+            formset.save()
             return redirect("practice_logs:view_sessions")
     else:
         form = SessionForm(request.user)
-    context = {"form": form}
+        formset = NewSessionExerciseFormSet(queryset=SessionExercise.objects.none(), form_kwargs={"user": request.user})
+        
+    context = {
+        "form": form,
+        "formset": formset
+    }
     return render(request, "practice_logs/new_session.html", context)
 
 @login_required
@@ -52,22 +66,21 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
         form = DateSearchForm()
     
     # Get fields
-    fields = [field.name.replace("_", " ").title() for field in Session._meta.get_fields()[1:]]
-    fields[fields.index("Time Minutes")] = "Time (Minutes)"
-    fields[fields.index("Bpm")] = "BPM"
-    
-    sources = Source.objects.filter(user=request.user)
-    exercises = Exercise.objects.filter(source__in=sources)
+    fields = ['Date', 'Time (Minutes)', 'Exercises', 'BPM', 'Days Since Last Practice']
     
     # Session Data
-    session_data = Session.objects.filter(date__range=[start_date, end_date], exercise__in=exercises).values('id', 'date', 'time_minutes', 'exercise_id', 'bpm',
+    session_data = Session.objects.filter(date__range=[start_date, end_date], user=request.user).values('id', 'date', 'time_minutes',
                                                                                      'days_since_last_practice').order_by('-date')
-    # Get exercise name
-    for session in session_data:
-            session['exercise'] = exercises.get(id=session['exercise_id']).name
+    session_ids = [session['id'] for session in session_data]
     
+    # Get exercise name and BPM data
+    session_exercises = SessionExercise.objects.filter(session__in=session_ids).values()
+    for session in session_exercises:
+            session['exercise_id'] = Exercise.objects.get(id=session['exercise_id']).name
+        
     context = {
         "session_data": session_data,
+        "session_exercises": session_exercises,
         "fields": fields,
         "form": form
     }
@@ -77,29 +90,35 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
 @login_required
 def edit_session(request, session_id):
     session = Session.objects.get(id=session_id)
+    session_exercises = SessionExercise.objects.filter(session_id=session.id)
     
-    exercise = session.exercise
-    source = exercise.source
-    if source.user != request.user:
+    if session.user != request.user:
         raise Http404
     
     if request.method == "POST":
         form = SessionForm(request.user, instance=session, data=request.POST)
-        if form.is_valid():
-            form.save()
+        formset = EditSessionExerciseFormSet(request.POST, form_kwargs={"user": request.user})
+        if form.is_valid() and formset.is_valid():
+            session = form.save(commit=False)
+            exercises = formset.save(commit=False)
+            for exercise in exercises:
+                exercise.session = session
+                exercise.save()
+            session.save()
+            formset.save()
             return redirect("practice_logs:view_sessions")
     else:
         form = SessionForm(request.user, instance=session)
+        formset = EditSessionExerciseFormSet(queryset=session_exercises, form_kwargs={"user": request.user})
         
-    context = {"form": form, "session": session}
+    context = {"form": form, "session": session, "formset": formset}
     return render(request, "practice_logs/edit_sessions.html", context)
 
 @login_required
 def delete_session(request, session_id):
     session = Session.objects.get(id=session_id)
-    exercise = session.exercise
-    source = exercise.source
-    if source.user != request.user:
+    
+    if session.user != request.user:
         raise Http404
     
     session.delete()
@@ -107,12 +126,10 @@ def delete_session(request, session_id):
 
 @login_required
 def dashboard(request):
-    sources = Source.objects.filter(user=request.user)
-    exercises = Exercise.objects.filter(source__in=sources)
     session_data = pd.DataFrame(list(Session.objects.filter(
-        date__range=[dt.today() - timedelta(days=30), dt.today()] ,exercise__in=exercises).values()))
+        date__range=[dt.today() - timedelta(days=30), dt.today()], user=request.user).values()))
     
-    # Return empty dashboard if user has no session data available
+    # Return empty dashboard if user does not have enough session data available
     if len(session_data) < 2:
         context = {
             'session_data': session_data
@@ -125,7 +142,7 @@ def dashboard(request):
     first_day_of_month = f"{curr_month}-01"
     last_day_of_month = f"{curr_month}-{days_of_month}"
 
-    session_data_monthly = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], exercise__in=exercises).values()
+    session_data_monthly = Session.objects.filter(date__range=[first_day_of_month, last_day_of_month], user=request.user).values()
     days_practiced_curr_month =  len(pd.DataFrame(list(session_data_monthly)).groupby('date', as_index=False)) if len(session_data_monthly) > 0 else 0
     average_practice_time = round(session_data.groupby('date', as_index=False).sum()["time_minutes"].mean())
     avg_days_between_practice = round(session_data.groupby('date', as_index=False).mean()["days_since_last_practice"].mean())
@@ -244,7 +261,9 @@ def new_print_exercise(request):
     if request.method == "POST":
         form = PrintExerciseForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            new_exercise = form.save(commit=False)
+            new_exercise.user = request.user
+            new_exercise.save()
             return redirect("practice_logs:view_sources")
     else:
         form = PrintExerciseForm(request.user)
@@ -256,7 +275,9 @@ def new_online_exercise(request):
     if request.method == "POST":
         form = OnlineExerciseForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            new_exercise = form.save(commit=False)
+            new_exercise.user = request.user
+            new_exercise.save()
             return redirect("practice_logs:view_sources")
     else:
         form = OnlineExerciseForm(request.user)
@@ -363,3 +384,20 @@ def delete_goal(request, goal_id):
     
     goal.delete()
     return redirect("practice_logs:view_goals")
+
+@sync_to_async
+def get_goal_data(id, user_id):
+    goal = Goal.objects.get(id=id)
+    if goal.user != user_id:
+        raise Http404    
+    return goal
+
+@sync_to_async
+@login_required
+@async_to_sync
+async def update_goal_notifications(request, goal_id):
+    goal = await get_goal_data(goal_id, request.user)
+    
+    goal.reminder = not goal.reminder
+    await goal.asave()
+    return HttpResponse()
