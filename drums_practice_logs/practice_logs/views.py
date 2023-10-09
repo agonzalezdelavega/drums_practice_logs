@@ -9,10 +9,9 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import urllib, base64
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import Http404
 import logging
 import sys
-from asgiref.sync import async_to_sync, sync_to_async
 
 default_start_date = dt.today() - timedelta(days=30)
 default_end_date = dt.today()
@@ -337,8 +336,11 @@ def delete_exercise(request, exercise_id):
 def view_goals(request):
     goals = Goal.objects.filter(user=request.user)
     
+    goals_progress = [{'id': goal.id, 'progress': round(goal.progress * 100)} for goal in goals]
+    
     context = {
-        "goals": goals
+        "goals": goals,
+        "goals_progress": goals_progress
     }
     
     return render(request, "practice_logs/view_goals.html", context)
@@ -384,20 +386,3 @@ def delete_goal(request, goal_id):
     
     goal.delete()
     return redirect("practice_logs:view_goals")
-
-@sync_to_async
-def get_goal_data(id, user_id):
-    goal = Goal.objects.get(id=id)
-    if goal.user != user_id:
-        raise Http404    
-    return goal
-
-@sync_to_async
-@login_required
-@async_to_sync
-async def update_goal_notifications(request, goal_id):
-    goal = await get_goal_data(goal_id, request.user)
-    
-    goal.reminder = not goal.reminder
-    await goal.asave()
-    return HttpResponse()
