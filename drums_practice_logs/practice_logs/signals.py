@@ -1,8 +1,8 @@
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import pre_delete, post_save, pre_save
 from django.dispatch import receiver
-from .models import Session, Exercise, Source, Goal
+from .models import Session, Goal
 from django.db.models import Min, Max
-from datetime import datetime as dt, timedelta
+from datetime import datetime as timedelta
 
 @receiver(post_save, sender=Session)
 def update_dslp_on_save(sender, instance, **kwargs):
@@ -33,11 +33,30 @@ def update_dslp_on_delete(sender, instance, **kwargs):
         new_dslp = (proceeding_session.date - preceeding_session.date).days
         user_sessions.filter(date=proceeding_session.date).update(days_since_last_practice=new_dslp)
 
-## WIP: Update goal progress on session completion
+# Update goal progress on goal save
+@receiver(pre_save, sender=Goal)
+def update_goal_progress_on_create(sender, instance, **kwargs):
+    if instance._state.adding:
+        user = instance.user
+        exercise = instance.exercise_id
+        days_in_period = {"Weekly": 7, "Biweekly": 14, "Monthly": 31}
+        period_length = days_in_period[instance.period]
+        num_periods = max(int((instance.end_date - instance.start_date).days / period_length), 1)
+        progress_per_instance = 1/(instance.frequency * num_periods)
 
-# Update progress on goal after saving a new session
+        for period in range(0, num_periods):
+            check_start_date = instance.start_date + timedelta(days=period_length * (period))
+            check_end_date = check_start_date + timedelta(days=period_length)
+            if exercise:
+                sessions = Session.objects.filter(user=user, date__range=(check_start_date, check_end_date), exercises=exercise).distinct().count()
+            else:
+                sessions = Session.objects.filter(user=user, date__range=(check_start_date, check_end_date)).distinct().count()
+                
+            instance.progress += progress_per_instance * min(instance.frequency, sessions)
+                
+# # Update goal progress on session save
 # @receiver(post_save, sender=Session)
-# def update_goals_on_save(sender, instance, **kwargs):
+# def update_goals_on_session_save(sender, instance, **kwargs):
 #     user = instance.user
 #     exercise = instance.exercise
 #     user_goals = Goal.objects.filter(user=user)
@@ -63,8 +82,9 @@ def update_dslp_on_delete(sender, instance, **kwargs):
 #             goal.progress += 1
 #             goal.save()
     
+# # Update goal progress on session delete
 # @receiver(pre_delete, sender=Session)
-# def update_goals_on_delete(sender, instance, **kwargs):
+# def update_goals_on_session_delete(sender, instance, **kwargs):
 #     user = instance.user
 #     exercise = instance.exercise
 #     user_goals = Goal.objects.filter(user=user, exercise_id__in=[exercise, None])

@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from datetime import datetime as dt
+from datetime import datetime as dt, timedelta
 from django.contrib.auth.models import User
 
 
@@ -58,15 +58,16 @@ class Goal(models.Model):
         ("Monthly", "Monthly"),
     ]
     
+    date_validation_msg = "End date must be between a week and a month after the start date"
+    
     start_date = models.DateField(auto_now_add=False, default=dt.today)
-    end_date = models.DateField(auto_now_add=False, default=dt.today)
+    end_date = models.DateField(auto_now_add=False, default=dt.today, 
+                                validators=[MinValueValidator(dt.date(dt.today() + timedelta(days=7)), date_validation_msg), 
+                                            MaxValueValidator(dt.date(dt.today() + timedelta(days=31)), date_validation_msg)])
     frequency = models.IntegerField(default=1)
     period = models.CharField(choices=PERIODS, max_length=8)
     exercise = models.ForeignKey(Exercise, on_delete=models.SET_DEFAULT, default="", blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    progress = models.IntegerField(default=0)
+    progress = models.DecimalField(max_digits=5, decimal_places=4, default=0, validators=[MinValueValidator(0), MaxValueValidator(1)])
     reminder = models.BooleanField(default=False)
     
-    @property
-    def progress_percent(self):
-        return int(self.progress / self.frequency * 100)
