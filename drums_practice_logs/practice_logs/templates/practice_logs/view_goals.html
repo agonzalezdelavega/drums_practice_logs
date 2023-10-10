@@ -18,7 +18,6 @@
             {% endif %}
             <p class="goal-card-frequency">{{ goal.frequency }} times</p>
             <p class="goal-card-period">{{ goal.period }}</p>
-            <a class="goal-card-edit" href="{% url 'practice_logs:edit_goal' goal.id %}"><span class="material-symbols-outlined">edit</span></a>
             <p class="goal-card-label">Start Date: </p>
             <p class="goal-card-date">{{ goal.start_date }}</p>
             <p class="goal-card-label">End Date: </p>

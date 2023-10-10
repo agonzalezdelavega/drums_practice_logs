@@ -360,24 +360,6 @@ def new_goal(request):
     return render(request, "practice_logs/new_goal.html", context)
     
 @login_required
-def edit_goal(request, goal_id):
-    goal = Goal.objects.get(id=goal_id)
-    
-    if goal.user != request.user:
-        raise Http404
-    
-    if request.method == "POST":
-        form = GoalsForm(request.user, instance=goal, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("practice_logs:view_goals")
-    else:
-        form = GoalsForm(request.user, instance=goal)
-        
-    context = {"form": form, "goal": goal}
-    return render(request, "practice_logs/edit_goal.html", context)
-
-@login_required
 def delete_goal(request, goal_id):
     goal = Goal.objects.get(id=goal_id)
     
