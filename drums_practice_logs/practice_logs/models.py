@@ -49,7 +49,7 @@ class Session(models.Model):
 class SessionExercise(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    bpm = models.IntegerField() 
+    bpm = models.PositiveIntegerField()
     
 class Goal(models.Model):
     PERIODS = [
