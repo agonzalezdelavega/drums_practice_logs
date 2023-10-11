@@ -49,13 +49,19 @@ class Session(models.Model):
 class SessionExercise(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    bpm = models.IntegerField() 
+    bpm = models.PositiveIntegerField()
     
 class Goal(models.Model):
     PERIODS = [
         ("Weekly", "Weekly"),
         ("Biweekly", "Biweekly"),
         ("Monthly", "Monthly"),
+    ]
+    
+    STATUS = [
+        ("complete", "Completed"),
+        ("in_progress", "In Progress"),
+        ("expired", "Expired")
     ]
     
     date_validation_msg = "End date must be between a week and a month after the start date"
@@ -69,5 +75,5 @@ class Goal(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.SET_DEFAULT, default="", blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     progress = models.DecimalField(max_digits=5, decimal_places=4, default=0, validators=[MinValueValidator(0), MaxValueValidator(1)])
-    reminder = models.BooleanField(default=False)
+    status = models.CharField(choices=STATUS, max_length=11, default="in_progress")
     
