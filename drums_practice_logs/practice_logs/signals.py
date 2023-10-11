@@ -1,8 +1,9 @@
 from django.db.models.signals import pre_delete, post_save, pre_save
 from django.dispatch import receiver
-from .models import Session, Goal
+from .models import Session, Goal, SessionExercise
 from django.db.models import Min, Max
-from datetime import datetime as timedelta
+from datetime import timedelta
+from decimal import Decimal
 
 @receiver(post_save, sender=Session)
 def update_dslp_on_save(sender, instance, **kwargs):
@@ -42,7 +43,7 @@ def update_goal_progress_on_create(sender, instance, **kwargs):
         days_in_period = {"Weekly": 7, "Biweekly": 14, "Monthly": 31}
         period_length = days_in_period[instance.period]
         num_periods = max(int((instance.end_date - instance.start_date).days / period_length), 1)
-        progress_per_instance = 1/(instance.frequency * num_periods)
+        progress_per_session = 1/(instance.frequency * num_periods)
 
         for period in range(0, num_periods):
             check_start_date = instance.start_date + timedelta(days=period_length * (period))
@@ -52,36 +53,33 @@ def update_goal_progress_on_create(sender, instance, **kwargs):
             else:
                 sessions = Session.objects.filter(user=user, date__range=(check_start_date, check_end_date)).distinct().count()
                 
-            instance.progress += progress_per_instance * min(instance.frequency, sessions)
+            instance.progress += progress_per_session * min(instance.frequency, sessions)
                 
-# # Update goal progress on session save
-# @receiver(post_save, sender=Session)
-# def update_goals_on_session_save(sender, instance, **kwargs):
-#     user = instance.user
-#     exercise = instance.exercise
-#     user_goals = Goal.objects.filter(user=user)
-    
-#     for goal in user_goals:
-#         # Check if progress applies to current period
-#         # 1. Get dates for current period
-#         match goal.period:
-#             case "Weekly":
-#                 check_start_date = max(instance.date - timedelta(days=7), goal.start_date)
-#             case "Biweekly":
-#                 check_start_date = max(instance.date - timedelta(days=14), goal.start_date)
-#             case "Monthly":
-#                 check_start_date = max(instance.date - timedelta(days=30), goal.start_date)
-#         # 2. Check how many times this exercise has been practiced for the past period
-#         # 2a. Use the appropriate filters if no exercise was defined for the user's goal
-#         if goal.exercise == None:
-#             session_count = Session.objects.filter(user=user, date__range=[check_start_date, goal.end_date]).count()
-#         else:
-#             session_count = Session.objects.filter(user=user, date__range=[check_start_date, goal.end_date], exercise=exercise).count()
-#         # 3. If the goal has not been met yet for the current period, add it to the user's progress
-#         if session_count < goal.frequency:
-#             goal.progress += 1
-#             goal.save()
-    
+# Update goal progress on session save
+@receiver(post_save, sender=SessionExercise)
+def update_goals_on_session_save(sender, instance, **kwargs):
+    user = instance.session.user
+    date = instance.session.date
+    exercise = instance.exercise.id
+    g1 = Goal.objects.filter(user=user, exercise=None, start_date__lte=date, end_date__gte=date, status="in_progress")
+    g2 = Goal.objects.filter(user=user, exercise=exercise, start_date__lte=date, end_date__gte=date, status="in_progress")
+    goals = g1.union(g2)
+
+    for goal in goals:
+        days_in_period = {"Weekly": 7, "Biweekly": 14, "Monthly": 31}
+        period_length = days_in_period[goal.period]
+        num_periods = max(int((goal.end_date - goal.start_date).days / period_length), 1)
+        progress_per_session = Decimal(1/(goal.frequency * num_periods))
+        check_dates = [goal.start_date + timedelta(days=period_length*period) for period in range(0, num_periods)]
+        check_start_date = max([date for date in check_dates if date <= date])
+        check_end_date = check_start_date + timedelta(days=period_length)
+        
+        if Session.objects.filter(date__range=(check_start_date, check_end_date)).count() <= goal.frequency:
+            goal.progress += progress_per_session
+            if goal.progress == 1:
+                goal.status = "complete"
+            goal.save()
+            
 # # Update goal progress on session delete
 # @receiver(pre_delete, sender=Session)
 # def update_goals_on_session_delete(sender, instance, **kwargs):
