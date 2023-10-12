@@ -1,29 +1,55 @@
 .session-history {
-    border-collapse: collapse;
-    width: 90vw;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: solid #2c2c2c 2px;
+    border-radius: 25px;
+    width: 1000px;
 }
 
 th {
     color: var(--font-color-white);
-    background-color: var(--bg-color-dark-blue);
+    background-color: #000550;
+}
+
+th:first-child {
+    border-top-left-radius: 22px;
+}
+
+th:last-child {
+    border-top-right-radius: 22px;
 }
 
 td, th {
-    border: 1px solid #000000;
-    padding: 0.5rem;
+    border-top: 1px solid #000000;
+    padding: 10px;
 }
 
-.edit-icon {
+.edit-icon a {
     visibility: hidden;
-    border: 0;
 }
 
-tr:hover > .edit-icon {
+.session-row:hover > .edit-icon a {
     visibility: visible;
 }
 
-tr:hover > .session-data {
+.session-row:hover td{
     background-color: #bcc7e0;
+}
+
+.session-row:last-child:hover td:first-child {
+    background-color: #bcc7e0;
+    border-left: 1px solid #bcc7e0;
+    border-bottom-left-radius: 25px;
+}
+
+.session-row:last-child:hover td:last-child {
+    background-color: #bcc7e0;
+    border-right: 1px solid #bcc7e0;
+    border-bottom-right-radius: 25px;
+}
+
+.session-data-align-center {
+    text-align: center;
 }
 
 .sources-table-container, .exercise-table-container {

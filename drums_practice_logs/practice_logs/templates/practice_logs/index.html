@@ -1,13 +1,13 @@
 {% extends "practice_logs/base.html" %}
 {% block content %}
 <div class="welcome">
-    <div class="welcome-text">
+    <div>
         <p class="welcome-title">Welcome to the Drums Practice Logs!</p>
         <p class="welcome-text">With this tool, you'll be able to keep track of your habits and ensure that you can practice consistently. Every step is a win!</p>
     </div>
     <div class="welcome-menu">
     {% if user.is_authenticated %}
-        <a class="basic-button" href="{% url 'practice_logs:dashboard' %}">Dashboard</a>
+        <a class="basic-button" href="{% url 'practice_logs:dashboard' %}">Practice Dashboard</a>
         <a class="basic-button" href="{% url 'practice_logs:view_sessions' %}">Session History</a>
     {% else %}
         <a class="basic-button" href="{% url 'users:sign_up' %}">Sign Up</a>

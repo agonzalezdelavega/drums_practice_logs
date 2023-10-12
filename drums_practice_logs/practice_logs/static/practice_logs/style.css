@@ -1,9 +1,10 @@
 :root {
     font-family: Tahoma, sans-serif;
-    --button-color-light-blue: #3882f6;
-    --bg-color-white: #dfdfdf;
-    --bg-color-dark-blue: #1f2937;
+    --button-color-dark-blue: #001331;
+    --bg-color-grey-blue: #4a72a7;
+    --bg-color-dark-blue: #232d4e;
     --font-color-white: #dcdcdc;
+    --section-background: #cee2e7;
     --content-margin: 2%;
 }
 
@@ -11,20 +12,21 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0;
-    background-color: var(--bg-color-white);
+    background-color: var(--bg-color-grey-blue);
 }
 
 main {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 nav {
-    background-color: var(--bg-color-dark-blue);
+    background: linear-gradient(to bottom, var(--bg-color-dark-blue) 90%, var(--bg-color-grey-blue));
     display: flex;
     margin: 0;
-    padding: 1% 0 1% 0;
+    padding: 1% 0 1.5% 0;
     align-items: center;
     justify-content: space-between;
 }
@@ -54,37 +56,83 @@ nav {
 }
 
 .welcome {
-    background-color: var(--bg-color-dark-blue);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: left;
+    align-items: center;
     width: 100%;
-    padding: 3%;
+    padding: 80px;
+    gap: 5%;
+    animation: fadeInWelcome 2s;
+}
+
+@keyframes fadeInWelcome {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
 }
 
 .welcome-title {
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: bolder;
     color: var(--font-color-white);
-    margin: 0 0 1.5vh 0;
+    padding: 50px;
+    margin: 0 80px;
+    text-align: center;
+    animation: fadeInWelcomeTitle 2.5s;
+}
+
+@keyframes fadeInWelcomeTitle {
+    from {
+      transform: translateX(70%);
+    }
+    to {
+      transform: translateX(0);
+    }
 }
 
 .welcome-text {
     font-size: 1.5rem;
     color: var(--font-color-white);
-    width: 110vh;
-    margin: 0 0 1.5vh 0;
+    text-align: center;
+    margin: 0 150px 15px 150px;
+    animation: fadeInWelcomeText 2.5s;
+}
+
+@keyframes fadeInWelcomeText {
+    from {
+      transform: translateX(-70%);
+    }
+    to {
+      transform: translateX(0);
+    }
 }
 
 .welcome-menu {
     display: flex;
-    align-items: center;
-    gap: 4%;
+    margin: 20px 0;
+    gap: 0 30px;
+    animation: fadeInWelcomeMenu 2.5s;
+}
+
+@keyframes fadeInWelcomeMenu {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+}
+
+.welcome-menu .basic-button{
+    padding: 20px;
 }
 
 .basic-button {
-    background-color: var(--button-color-light-blue);
+    background-color: var(--button-color-dark-blue);
     border-radius: 25px;
     border: 0;
     color: #f9faf8;
@@ -101,18 +149,22 @@ nav {
 }
 
 .sessions {
-    margin: var(--content-margin);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    width: 90vw;
+    align-items: center;
+    width: 90%;
+    padding: 0 0 200px 0;
+    box-shadow: 4px 4px 6px 6px #1a1919;
+    background-color: var(--section-background);
+    margin-top: 0;
 }
 
 .date-search-container {
     display: flex;
     align-items: center;
     gap: 2%;
-    margin: 0 0 1% 0;
+    margin: 20px;
+    width: 800px;
 }
 
 .date-selector > input{
@@ -124,13 +176,13 @@ nav {
 }
 
 .session-table-options {
-    background-color: var(--button-color-light-blue);
+    background-color: var(--button-color-dark-blue);
+    color: var(--font-color-white);
     padding: 1vh 1.5vw 1vh 1.5vw;
     border: 0;
     border-radius: 25px;
     font-size: 0.8rem;
     text-decoration: none;
-    color: #000000;
     font-weight: bold;
     cursor: pointer;
 }

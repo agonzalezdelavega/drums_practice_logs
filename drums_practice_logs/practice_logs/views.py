@@ -27,7 +27,6 @@ logger.addHandler(ch)
 
 
 def index(request):
-    logger.info('Welcome to the drums practice logs!!!!!')
     return render(request, "practice_logs/index.html")
 
 @login_required

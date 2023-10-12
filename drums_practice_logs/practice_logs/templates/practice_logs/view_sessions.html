@@ -20,13 +20,14 @@
                 {% for field in fields %}
                     <th>{{ field }}</th>
                 {% endfor %}
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {% for session in session_data %}
-                <tr>
+                <tr class="session-row">
                     <td class="session-data">{{ session.date }}</td>
-                    <td class="session-data">{{ session.time_minutes }}</td>
+                    <td class="session-data session-data-align-center">{{ session.time_minutes }}</td>
                     <td class="session-data">
                     {% for session_exercise in session_exercises %}
                         {% if session_exercise.session_id == session.id %}
@@ -35,7 +36,7 @@
                         {% endif %}
                     {% endfor %}
                     </td>
-                    <td class="session-data">
+                    <td class="session-data session-data-align-center">
                     {% for session_exercise in session_exercises %}
                         {% if session_exercise.session_id == session.id %}
                             {{ session_exercise.bpm }}
@@ -43,8 +44,8 @@
                         {% endif %}
                     {% endfor %}
                     </td>
-                    <td class="session-data">{{ session.days_since_last_practice }}</td>
-                    <td class="edit-icon"><a href="{% url 'practice_logs:edit_session' session.id %}"><span class="material-symbols-outlined">edit</span></a></td>
+                    <td class="session-data session-data-align-center">{{ session.days_since_last_practice }}</td>
+                    <td class="edit-icon session-data"><a href="{% url 'practice_logs:edit_session' session.id %}"><span class="material-symbols-outlined">edit</span></a></td>
                 </tr>
             {% endfor %}
         </tbody>
