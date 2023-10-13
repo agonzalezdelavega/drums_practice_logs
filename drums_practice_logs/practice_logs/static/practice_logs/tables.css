@@ -24,11 +24,11 @@ td, th {
     padding: 10px;
 }
 
-.edit-icon a {
+tr > .edit-icon a {
     visibility: hidden;
 }
 
-.session-row:hover > .edit-icon a {
+tr:hover > .edit-icon a {
     visibility: visible;
 }
 
@@ -61,9 +61,12 @@ td, th {
 }
 
 .sources-exercises-table {
-    border-collapse: collapse;
-    width: 50vw;
-    margin: 0 0 3vh 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: solid #2c2c2c 2px;
+    border-radius: 25px;
+    width: 500px;
+    margin: 0 0 20px 0;
 }
 
 .sources-exercises-table-title {

@@ -155,7 +155,9 @@ def dashboard(request):
     plt.title("Days Since Last Practice Session", fontsize=30)
     plt.plot(consistency['date'], consistency['days_since_last_practice'])
     
+    plt.gca().set_facecolor("#eff0f8")
     consistency_chart = plt.gcf()
+    consistency_chart.set_facecolor("#cee2e7")
     buffer = BytesIO()
     consistency_chart.savefig(buffer, format="png")
     buffer.seek(0)
@@ -173,7 +175,9 @@ def dashboard(request):
     plt.plot(practice_times['date'], practice_times['time_minutes'])
     plt.plot(practice_times['date'], average_practice_time_line)
     
+    plt.gca().set_facecolor("#eff0f8")
     duration_chart = plt.gcf()
+    duration_chart.set_facecolor("#cee2e7")
     buffer = BytesIO()
     duration_chart.savefig(buffer, format="png")
     buffer.seek(0)
@@ -194,16 +198,16 @@ def dashboard(request):
 
 @login_required
 def view_sources(request):
-    sources = Source.objects.filter(user=request.user).values()
-    online_sources = sources.exclude(type="book")
-    print_sources = sources.filter(type="book")
+    sources = Source.objects.filter(user=request.user)
+    online_sources = sources.exclude(type="book").values()
+    print_sources = sources.filter(type="book").values()
     online_source_ids = [source["id"] for source in online_sources]
     print_source_ids = [source["id"] for source in print_sources]
     online_exercises = Exercise.objects.filter(source_id__in=online_source_ids).values()
     print_exercises = Exercise.objects.filter(source_id__in=print_source_ids).values()
 
     context = {
-        'sources': sources,
+        'sources': list(sources),
         'online_sources': online_sources,
         'print_sources': print_sources,
         'online_exercises': online_exercises,
@@ -333,13 +337,15 @@ def delete_exercise(request, exercise_id):
 
 @login_required
 def view_goals(request):
-    goals = Goal.objects.filter(user=request.user)
+    goals = Goal.objects.filter(user=request.user, status="in_progress")
+    goals_completed = Goal.objects.filter(user=request.user, status="complete")
     
     goals_progress = [{'id': goal.id, 'progress': round(goal.progress * 100)} for goal in goals]
     
     context = {
         "goals": goals,
-        "goals_progress": goals_progress
+        "goals_progress": goals_progress,
+        "goals_completed": goals_completed
     }
     
     return render(request, "practice_logs/view_goals.html", context)

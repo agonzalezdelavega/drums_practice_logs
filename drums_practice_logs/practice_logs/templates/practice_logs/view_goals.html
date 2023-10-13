@@ -8,7 +8,11 @@
             This view can help you set and track goals for your practice sessions.
         </p>
     </div>
-    <div class="goals-content">
+    <div class="goal-tabs">
+        <button class="goal-tab" onclick="toggleGoalView(event, 'in_progress')">In Progress</button>
+        <button class="goal-tab" onclick="toggleGoalView(event, 'completed')">Completed</button>
+    </div>
+    <div class="goals-content" id="in_progress">
     {% for goal in goals %}
         <div class="goal-card">
             {% if goal.exercise == None %}
@@ -23,18 +27,71 @@
             <p class="goal-card-label">End Date: </p>
             <p class="goal-card-date">{{ goal.end_date }}</p>
             <div class="progress-container">
+                <p class="progress-title">Progress:</p>
+                {% for goal_progress in goals_progress %}
+                    {% if goal_progress.id == goal.id %}
+                        <p class="progress-text">{{ goal_progress.progress }}%</p>
+                    {% endif %}
+                {% endfor %}
                 <progress class="progress-bar" value="{{ goal.progress }}" max="1"></progress>
-            {% for goal_progress in goals_progress %}
-                {% if goal_progress.id == goal.id %}
-                    <div class="progress-text">{{ goal_progress.progress }}%</div>
-                {% endif %}
-            {% endfor %}
+            </div>
+            <div class="delete-goal">
+                <form method="post" action="{% url 'practice_logs:delete_goal' goal.id%}" onsubmit="return confirm_delete(event)">
+                    {% csrf_token %}
+                    <button type="submit" name="delete-button" class="delete-goal-button"><span class="material-symbols-outlined">delete</span></button>
+                </form>
             </div>
         </div>
     {% endfor %}
     {% if goals|length < 3 %}
-    <a href="{% url 'practice_logs:new_goal' %}" class="basic-button new-goal-button">New Goal</a>
+    <a href="{% url 'practice_logs:new_goal' %}" class="basic-button new-goal-button"><span class="material-symbols-outlined">add</span>New Goal</a>
     {% endif %}
     </div>
+    <div class="goals-content" id="completed" hidden>
+    {% for goal in goals_completed %}
+        <div class="goal-card">
+            {% if goal.exercise == None %}
+            <p class="goal-card-exercise">Any Exercise</p>
+            {% else %}
+            <p class="goal-card-exercise">{{ goal.exercise }}</p>
+            {% endif %}
+            <p class="goal-card-frequency">{{ goal.frequency }} times</p>
+            <p class="goal-card-period">{{ goal.period }}</p>
+            <p class="goal-card-label">Start Date: </p>
+            <p class="goal-card-date">{{ goal.start_date }}</p>
+            <p class="goal-card-label">End Date: </p>
+            <p class="goal-card-date">{{ goal.end_date }}</p>
+            <div class="progress-container">
+                <p class="progress-title">Progress:</p>
+                <p class="progress-text">100%</p>
+                <progress class="progress-bar" value="{{ goal.progress }}" max="1"></progress>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(() => {
+        $('#completed').hide();
+        $('nav').css('background', 'var(--bg-color-dark-blue)');
+    });
+
+    const confirm_delete = function(e) {
+        if (confirm('Are you sure you would like to delete this goal?')) {
+            e.submit();
+        } else {
+            return false;
+        };
+    };
+
+    const toggleGoalView = function(e, status) {
+        if (status === 'completed') {
+            $('#in_progress').hide();
+            $('#completed').show();
+        } else if (status === 'in_progress') {
+            $('#in_progress').show();
+            $('#completed').hide();
+        };
+    };
+</script>
 {% endblock content %}

@@ -33,14 +33,16 @@
     {% endif %}
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script> 
 <script type="text/javascript">
-    if ('{{ days_since_last_practice }}' < 3) {
-        $('.days-since-last-practice-data').addClass('dslp-green');
-    } else if ('{{ days_since_last_practice }}' >= 3 && '{{ days_since_last_practice }}' < 5) {
-        $('.days-since-last-practice-data').addClass('dslp-blue');
-    } else {
-        $('.days-since-last-practice-data').addClass('dslp-red');
-    };
+    $(document).ready(() => {
+        $('nav').css('background', 'var(--bg-color-dark-blue)');
+        if ('{{ days_since_last_practice }}' < 3) {
+            $('.days-since-last-practice-data').addClass('dslp-green');
+        } else if ('{{ days_since_last_practice }}' >= 3 && '{{ days_since_last_practice }}' < 5) {
+            $('.days-since-last-practice-data').addClass('dslp-blue');
+        } else {
+            $('.days-since-last-practice-data').addClass('dslp-red');
+        };
+    });
 </script>
 {% endblock content %}

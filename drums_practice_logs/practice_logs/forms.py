@@ -93,7 +93,6 @@ class SessionExerciseForm(forms.ModelForm):
         }
         widgets = {
             "session": forms.HiddenInput,
-            
         }
         
 NewSessionExerciseFormSet = inlineformset_factory(Session, SessionExercise, form=SessionExerciseForm, extra=5, min_num=1, max_num=5)

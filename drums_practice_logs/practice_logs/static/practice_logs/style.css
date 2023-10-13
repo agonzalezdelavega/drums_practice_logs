@@ -1,3 +1,5 @@
+/* Base */
+
 :root {
     font-family: Tahoma, sans-serif;
     --button-color-dark-blue: #001331;
@@ -5,6 +7,7 @@
     --bg-color-dark-blue: #232d4e;
     --font-color-white: #dcdcdc;
     --section-background: #cee2e7;
+    --form-background: #bacbcf;
     --content-margin: 2%;
 }
 
@@ -23,7 +26,7 @@ main {
 }
 
 nav {
-    background: linear-gradient(to bottom, var(--bg-color-dark-blue) 90%, var(--bg-color-grey-blue));
+    background: linear-gradient(to bottom, var(--bg-color-dark-blue) 95%, var(--bg-color-grey-blue));
     display: flex;
     margin: 0;
     padding: 1% 0 1.5% 0;
@@ -54,6 +57,8 @@ nav {
     color: var(--font-color-white);
     text-decoration: none;
 }
+
+/* Home */
 
 .welcome {
     display: flex;
@@ -131,6 +136,8 @@ nav {
     padding: 20px;
 }
 
+/* Buttons */
+
 .basic-button {
     background-color: var(--button-color-dark-blue);
     border-radius: 25px;
@@ -147,6 +154,8 @@ nav {
 .basic-button:disabled {
     background-color: #3881f6a6;
 }
+
+/* Sessions */
 
 .sessions {
     display: flex;
@@ -187,11 +196,17 @@ nav {
     cursor: pointer;
 }
 
+/* Forms */
+
 .item-form-container {
     display: flex;
     flex-direction: column;
     width: 60%;
     align-items: center;
+    background-color: var(--form-background);
+    border-radius: 25px;
+    padding-bottom: 60px;
+    margin-top: 10px;
 }
 
 .item-form-container > h2 {
@@ -245,10 +260,79 @@ nav {
     gap: 1vw;
 }
 
+fieldset {
+    border: none;
+}
+
+legend {
+    margin-top: 20px;
+}
+
+#session-exercises-labels {
+    width: 500px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#session-exercises-labels > label:first-child {
+    margin-left: 75px;
+    margin-right: 125px;
+}
+
+#session-exercises-labels * {
+    display: inline-block;
+}
+
+.exercise-form {
+    display: flex;
+    gap: 5px;
+    padding: 7px;
+}
+
+.delete-session-exercise {
+    color: #cc0303;
+    background: none;
+    border: none;
+}
+
+.item-form input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.item-form input::-webkit-outer-spin-button,
+.item-form input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] + label {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="checkbox"] + label::before {
+    content: '\2612';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 20px;
+}
+
+input[type="checkbox"]:checked + label::before {
+    color: #f10a4f;
+}
+
+/* Authentication */
+
 .auth-form-container {
     display: flex;
     flex-direction: column;
     width: 60%;
+    color: var(--font-color-white);
 }
 
 .login-form, .signup-form {
@@ -279,18 +363,23 @@ nav {
     width: 25%;
 }
 
-.delete-session-exercise {
-    color: #cc0303;
-    background: none;
-    border: none;
+#logged-out {
+    font-size: 2rem;
+    font-weight: bolder;
+    padding: 200px 50px;
+    margin: 0 80px;
+    text-align: center;
+    color: var(--font-color-white);
 }
 
-.item-form input[type=number] {
-    -moz-appearance: textfield;
-}
+/* Sources & Exercises */
 
-.item-form input::-webkit-outer-spin-button,
-.item-form input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+#sources-exercises-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 800px;
+    padding: 0 0 60px 0;
+    box-shadow: 4px 4px 6px 6px #1a1919;
+    background-color: var(--section-background);
 }
