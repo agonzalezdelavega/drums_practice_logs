@@ -10,6 +10,10 @@
             <legend>Add up to five exercises to this session:</legend>
             {{ formset.management_form }}
             <div id="session-exercises">
+                <div id="session-exercises-labels">
+                    <label>Exercise</label>
+                    <label>BPM</label>
+                </div>
                 {% for form in formset.forms %}
                 <div class="exercise-form">
                     {{ form.exercise }}
@@ -32,5 +36,18 @@
             <a class="basic-button" href="{% url 'practice_logs:delete_session' session.id %}">Delete Session</a>
         </div>
     </form>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('input[type="checkbox"]').each(function(index) {
+                $(this).after(`<label for="${$(this).attr('id')}" class="checkbox-label"></label>`);
+            });
+        });
+
+        //$('input[type="checkbox"]').on("click", "highlightToBeDeleted");
+//
+        //const highlightToBeDeleted = function(e) {
+        //    e.css( "background-color", "red" );
+        //};
+    </script>
 </div>
 {% endblock content %}

@@ -1,6 +1,7 @@
 {% extends "practice_logs/base.html" %}
 
 {% block content %}
+<div id="sources-exercises-content">
 <div class="sources-table-container">
 {% if sources|length != 0 %}
 <table class="sources-exercises-table">
@@ -10,15 +11,15 @@
             <th>Source Name</th>
             <th>Author</th>
             <th>Type</th>
+            <th></th>
         </tr>
     </thead>
-
     <tbody>
         {% for source in sources %}
         <tr>
             <td>{{ source.name }}</td>
             <td>{{ source.author }}</td>
-            <td>{{ source.type }}</td>
+            <td>{{ source.get_type_display }}</td>
             <td class="edit-icon"><a href="{% url 'practice_logs:edit_source' source.id %}"><span class="material-symbols-outlined">edit</span></a></td>
         </tr>
         {% endfor %}
@@ -37,6 +38,7 @@
             <th>Exercise Name</th>
             <th>Source</th>
             <th>Link</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -68,6 +70,7 @@
             <th>Exercise Name</th>
             <th>Source</th>
             <th>Page</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>

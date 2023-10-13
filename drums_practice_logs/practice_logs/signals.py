@@ -58,7 +58,9 @@ def update_goal_progress_on_create(sender, instance, **kwargs):
 # Update goal progress on session save
 @receiver(post_save, sender=SessionExercise)
 def update_goals_on_session_save(sender, instance, **kwargs):
-    if len(SessionExercise.objects.filter(session=instance.session.id, exercise=instance.exercise.id)) == 1:
+    exercise = instance.exercise.id if instance.exercise else None
+    if exercise and len(SessionExercise.objects.filter(session=instance.session.id, exercise=instance.exercise.id)) == 1 \
+        or not exercise and len(SessionExercise.objects.filter(session=instance.session.id)) == 1:
         user = instance.session.user
         date = instance.session.date
         exercise = instance.exercise.id
@@ -76,7 +78,7 @@ def update_goals_on_session_save(sender, instance, **kwargs):
             check_end_date = check_start_date + timedelta(days=period_length)
             
             if Session.objects.filter(date__range=(check_start_date, check_end_date)).count() <= goal.frequency:
-                goal.progress += progress_per_session
+                goal.progress = min(goal.progress + progress_per_session, 1)
                 if goal.progress == 1:
                     goal.status = "complete"
                 goal.save()
@@ -87,8 +89,8 @@ def update_goals_on_session_delete(sender, instance, **kwargs):
     user = instance.user
     date = instance.date
     exercises = [exercise['id'] for exercise in instance.exercises.values('id')]
-    g1 = Goal.objects.filter(user=user, exercise=None, start_date__lte=date, end_date__gte=date, status="in_progress")
-    g2 = Goal.objects.filter(user=user, exercise__in=exercises, start_date__lte=date, end_date__gte=date, status="in_progress")
+    g1 = Goal.objects.filter(user=user, exercise=None, start_date__lte=date, end_date__gte=date)
+    g2 = Goal.objects.filter(user=user, exercise__in=exercises, start_date__lte=date, end_date__gte=date)
     goals = g1.union(g2)
 
     for goal in goals:
@@ -101,7 +103,9 @@ def update_goals_on_session_delete(sender, instance, **kwargs):
         check_end_date = check_start_date + timedelta(days=period_length)
         
         if Session.objects.filter(date__range=(check_start_date, check_end_date)).count() <= goal.frequency:
-            goal.progress -= progress_per_session
             if goal.progress == 1:
-                goal.status = "complete"
+                goal.status = "in_progress"
+            session_exercises = set([session['exercise'] for session in SessionExercise.objects.filter(session=instance.id).values('exercise')])
+            for session_exercise in session_exercises:
+                goal.progress = max(goal.progress - progress_per_session, 0)
             goal.save()
