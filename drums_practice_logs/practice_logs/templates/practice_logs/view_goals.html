@@ -10,7 +10,11 @@
     </div>
     <div class="goal-tabs">
         <button class="goal-tab" onclick="toggleGoalView(event, 'in_progress')">In Progress</button>
+        {% if goals_completed|length == 0 %}
+        <button class="goal-tab" onclick="toggleGoalView(event, 'completed')" disabled title="No goals completed yet">Completed</button>
+        {% else %}
         <button class="goal-tab" onclick="toggleGoalView(event, 'completed')">Completed</button>
+        {% endif %}
     </div>
     <div class="goals-content" id="in_progress">
     {% for goal in goals %}
