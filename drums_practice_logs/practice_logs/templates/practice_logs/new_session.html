@@ -10,6 +10,10 @@
             <legend>Add up to five exercises to this session:</legend>
             {{ formset.management_form }}
             <div id="session-exercises">
+                <div id="session-exercises-labels">
+                    <label>Exercise</label>
+                    <label>BPM</label>
+                </div>
                 {% for form in formset.forms %}
                 <div class="exercise-form">
                     {{ form.exercise }}
