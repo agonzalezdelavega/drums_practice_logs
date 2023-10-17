@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from datetime import datetime as dt, timedelta
 from django.contrib.auth.models import User
 
@@ -67,9 +68,7 @@ class Goal(models.Model):
     date_validation_msg = "End date must be between a week and a month after the start date"
     
     start_date = models.DateField(auto_now_add=False, default=dt.today)
-    end_date = models.DateField(auto_now_add=False, default=dt.today, 
-                                validators=[MinValueValidator(dt.date(dt.today() + timedelta(days=7)), date_validation_msg), 
-                                            MaxValueValidator(dt.date(dt.today() + timedelta(days=31)), date_validation_msg)])
+    end_date = models.DateField(auto_now_add=False, default=dt.today)
     frequency = models.IntegerField(default=1)
     period = models.CharField(choices=PERIODS, max_length=8)
     exercise = models.ForeignKey(Exercise, on_delete=models.SET_DEFAULT, default="", blank=True, null=True)
@@ -77,3 +76,14 @@ class Goal(models.Model):
     progress = models.DecimalField(max_digits=5, decimal_places=4, default=0, validators=[MinValueValidator(0), MaxValueValidator(1)])
     status = models.CharField(choices=STATUS, max_length=11, default="in_progress")
     
+    def clean(self):
+        start_date = self.start_date
+        end_date = self.end_date
+        if not end_date >= start_date + timedelta(days=7):
+            raise ValidationError("End date must be at least 1 week after start date")
+        elif end_date > start_date + timedelta(days=31):
+            raise ValidationError("End date cannot be more than 1 month after start date")
+        
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
