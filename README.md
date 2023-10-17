@@ -1,5 +1,14 @@
 # Creating a Highly Scalable Django Application on ECS
 
+## Website Link
+https://dpl.agonzalezdelavega.com/
+
+Feel free to use the credentials below to get a better view of the user experience:
+
+**Username**: dpltest
+
+**Password**: ecstest%9
+
 ## Description
 
 Learning an instrument can be difficult, but as someone who has played musical instruments for a significant part of his life I can say that one single thing has helped me drastically: practicing consistently for short sessions. Practicing for 15-20 minute sessions 3 times a week has remarkably better results than one big session once every 1-2 weeks, and it's much easier to fit in your own schedule. For this reason, I always track my practices in my favorite instrument, the drums, to keep myself motivated and visualize my progress.
