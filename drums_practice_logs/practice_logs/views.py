@@ -54,7 +54,7 @@ def new_session(request):
     return render(request, "practice_logs/new_session.html", context)
 
 @login_required
-def view_sessions(request, start_date=default_start_date, end_date=default_end_date):
+def view_sessions(request, start_date=default_start_date.strftime("%Y-%m-%d"), end_date=default_end_date.strftime("%Y-%m-%d")):
     # Date Form
     if request.method == "POST":
         form = DateSearchForm(data=request.POST)
@@ -80,7 +80,9 @@ def view_sessions(request, start_date=default_start_date, end_date=default_end_d
         "session_data": session_data,
         "session_exercises": session_exercises,
         "fields": fields,
-        "form": form
+        "form": form,
+        "start_date": start_date,
+        "end_date": end_date
     }
     
     return render(request, "practice_logs/view_sessions.html", context)
